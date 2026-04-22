@@ -18,6 +18,7 @@ class AProject_PrinsiCharacter : public ACharacter
 	GENERATED_BODY()
 
 	//TEST
+	//TEST2
 	
 private:
 
