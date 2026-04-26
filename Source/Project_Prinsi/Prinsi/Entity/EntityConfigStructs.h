@@ -26,6 +26,15 @@ enum class EEntityType :uint8
 	Tower	UMETA(DisplayName = "Tower")
 };
 
+//[TODO]阵营枚举
+UENUM(BlueprintType)
+enum class EEntityFaction :uint8
+{
+	None,
+	Player,
+	Enemy,
+};
+
 // Entity主表
 USTRUCT(BlueprintType)
 struct  FEntityBaseConfig :public FTableRowBase
@@ -36,8 +45,16 @@ struct  FEntityBaseConfig :public FTableRowBase
 	FName EntityId;				// [TODO]实体ID（读表时蓝图的EntityId会与RawName匹配，这个字段暂时没意义）
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EEntityType EEntityType;	// 实体类型(通过这个判断读哪个扩展表)
+	EEntityType EntityType;			// 实体类型(通过这个判断读哪个扩展表)
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EEntityFaction EntityFaction;	// 阵营
+
+	//[TODO]perfabPath等实装部署阶段再加入
+
+	//[TODO]Tag等GAS实装之后再加入
 };
+
 
 // Tower扩展表
 USTRUCT(BlueprintType)
@@ -55,3 +72,35 @@ struct  FEntityTowerExtraConfig :public FTableRowBase
 	int32 BuildCost = 42;
 };
 
+
+// Enemy扩展表
+USTRUCT(BlueprintType)
+struct  FEntityEnemyExtraConfig :public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName EntityId;				// [TODO]实体ID（读表时蓝图的EntityId会与RawName匹配，这个字段暂时没意义）
+};
+
+
+// Summon扩展表
+USTRUCT(BlueprintType)
+struct  FEntitySummonExtraConfig :public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName EntityId;				// [TODO]实体ID（读表时蓝图的EntityId会与RawName匹配，这个字段暂时没意义）
+};
+
+
+// Player扩展表
+USTRUCT(BlueprintType)
+struct  FEntityPlayerExtraConfig :public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName EntityId;				// [TODO]实体ID（读表时蓝图的EntityId会与RawName匹配，这个字段暂时没意义）
+};

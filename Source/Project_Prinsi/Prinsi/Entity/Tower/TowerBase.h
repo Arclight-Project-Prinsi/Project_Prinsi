@@ -17,22 +17,22 @@ class PROJECT_PRINSI_API ATowerBase : public AEntityBase
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity")
-	UDataTable* EntityBaseTable;					// 实体主表
+	UDataTable* EntityBaseTable_;					// 实体主表
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity|Tower")
-	UDataTable* TowerExtraTable;					// Tower类拓展配置表
+	UDataTable* TowerExtraTable_;					// Tower类拓展配置表
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status Tower")
-	float Damage = 1.0f;		// 伤害
+	float Damage_ = 1.0f;		// 伤害
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status Tower")
-	int32 BuildCost = 42;		// 建造花费
+	int32 BuildCost_ = 42;		// 建造花费
 
 protected:
 	virtual void BeginPlay() override;
 
 protected:
-	virtual void InitFromConfig()override;									// 读取配置表实现Entity初始化
-	void InitTowerFromConfig(const FEntityTowerExtraConfig* TowerConfig);	// 读取配置表实现Tower初始化
+	void InitFromConfig(const FEntityBaseConfig* BaseConfig)override;			// 读取配置表实现Entity初始化
+	void InitTowerFromConfig(const FEntityTowerExtraConfig* TowerConfig);		// 读取配置表实现Tower初始化
 };
