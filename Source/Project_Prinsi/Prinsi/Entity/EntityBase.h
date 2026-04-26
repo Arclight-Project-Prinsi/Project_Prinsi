@@ -14,10 +14,9 @@ class PROJECT_PRINSI_API AEntityBase : public AActor
 protected:
 	virtual void BeginPlay() override;
 
-	//ws------------------------------------
-protected:
 	virtual void InitFromConfig() {}	// 读取配置表实现初始化
 
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity")
 	FName EntityId;						// 实体ID	
 
@@ -25,8 +24,6 @@ protected:
 public:
 	// Sets default values for this actor's properties
 	AEntityBase();
-
-
 
 public:
 	// Called every frame
