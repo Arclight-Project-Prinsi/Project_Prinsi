@@ -23,7 +23,8 @@
 UENUM(BlueprintType)
 enum class EEntityType :uint8 {
 	EntityNone	UMETA(DisplayName = "None"),
-	EntityTower	UMETA(DisplayName = "Tower")
+	EntityTower	UMETA(DisplayName = "Tower"),
+	EntityPlayer UMETA(DisplayName = "Player")
 };
 
 // ~~(枚举)Entity阵营类型
@@ -63,5 +64,17 @@ struct  FEntityTowerExtraConfig :public FTableRowBase {
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 BuildCost = 42;
+};
+
+// ~~Player扩展表
+USTRUCT(BlueprintType)
+struct  FEntityPlayerExtraConfig :public FTableRowBase {
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName EntityId;					// [TODO]实体ID（读表时蓝图的EntityId会与RawName匹配，这个字段暂时没意义）
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Health = 10.0f;
 };
 

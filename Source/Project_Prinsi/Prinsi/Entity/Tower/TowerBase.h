@@ -37,6 +37,9 @@ protected:
 	int32 BuildCost_ = 42;			// 建造花费
 
 protected:
-	// 读取配置表实现Tower初始化
-	void InitTowerFromConfig(const FEntityTowerExtraConfig* TowerConfig);	
+	// 读取配置表进行初始化
+	bool InitFromConfig(FName EntityId);
+
+	// 读取扩展表进行Tower初始化
+	bool InitTowerFromConfig(const FEntityTowerExtraConfig* TowerConfig);
 };

@@ -25,7 +25,7 @@ public:
 
 public:
 	// 从主表配置初始化
-	void InitFromConfig(const FEntityBaseConfig* BaseConfig);
+	bool InitFromConfig(const FEntityBaseConfig* BaseConfig);
 
 public:
 	FName GetEntityId() const { return EntityId_; }

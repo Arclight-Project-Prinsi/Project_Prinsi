@@ -24,10 +24,10 @@ void UEntityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
-void UEntityComponent::InitFromConfig(const FEntityBaseConfig* BaseConfig) {
+bool UEntityComponent::InitFromConfig(const FEntityBaseConfig* BaseConfig) {
 	if (!BaseConfig) {
 		UE_LOG(LogTemp, Warning, TEXT("EntityComponent初始化失败：BaseConfig为空(EntityComponent.cpp)"));
-		return;
+		return false;
 	}
 
 	// ~~字段初始化
@@ -36,5 +36,6 @@ void UEntityComponent::InitFromConfig(const FEntityBaseConfig* BaseConfig) {
 	Faction_ = BaseConfig->EntityFaction;	// 阵营
 	//[D]
 	UE_LOG(LogTemp, Log, TEXT("EntityComponent初始化成功：EntityId = %s"), *EntityId_.ToString());
+	return true;
 }
 
