@@ -1,15 +1,15 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"		// 弹簧臂组件
+#include "Camera/CameraComponent.h"					// 相机组件
 #include "Prinsi/Component/EntityComponent.h"		// Entity组件
 #include "BasePlayerCharacter.generated.h"
 
 UCLASS()
-class PROJECT_PRINSI_API ABasePlayerCharacter : public ACharacter
-{
+class PROJECT_PRINSI_API ABasePlayerCharacter : public ACharacter {
 	GENERATED_BODY()
 
 public:
@@ -28,10 +28,17 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
-	//ws----------------------
+	// ~~Entity初期配置
+protected:
+	// 读取配置表进行初始化
+	bool InitFromConfig(FName EntityId);
+
+	// 读取配置表实现Player初始化
+	bool InitPlayerFromConfig(const FEntityPlayerExtraConfig* PlayerConfig);
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UEntityComponent* EntityComponent_;		// 创建Entity组件
+	UEntityComponent* EntityComp_;		// 创建Entity组件
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity")
@@ -40,14 +47,20 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity|Player")
 	UDataTable* PlayerExtraTable_;			// Player类拓展配置表
 
+
+	// ~~Status
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status Player")
 	int32 Health_ = 42;						// 生命值
 
-protected:
-	// 读取配置表进行初始化
-	bool InitFromConfig(FName EntityId);
 
-	// 读取配置表实现Player初始化
-	bool InitPlayerFromConfig(const FEntityPlayerExtraConfig* PlayerConfig);
+	//ws----------------------------------
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	USpringArmComponent* SpringArmComp_;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	UCameraComponent* TopDownCamera_;
+
+	//ws2---------------------------------
 };
