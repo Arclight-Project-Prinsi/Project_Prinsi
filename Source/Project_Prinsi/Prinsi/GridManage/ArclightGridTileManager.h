@@ -41,7 +41,7 @@ private:
 
 public:
 	UFUNCTION(CallInEditor, Category = "Grid|Editor")
-	void EUFGenerateGrid();	// (EUF)生成所有格子
+	void EUFGenerateGrid();		// (EUF)生成所有格子
 
 	UFUNCTION(CallInEditor, Category = "Grid|Editor")
 	void EUFClearGrid();		// (EUF)删除所有格子
@@ -94,4 +94,25 @@ public:
 	// ~~指针交互(Cursor)
 	// 根据指针获取对应格子
 	bool GetTileUnderCursor(APlayerController* PlayerController, AArclightGridTile*& OutTile) const;
+
+	//ws---------------------------------------
+
+	// 通过锚点格子(鼠标)算出建筑原点格子(左下角)
+	FIntPoint CalcOriginCoordFromAnchor(const FIntPoint& AnchorCoord, const FIntPoint& FootprintSize) const;
+
+	// 更新预览体位置
+	void UpdatePlacementPreview(APlayerController* PlayerController, const FIntPoint& FootprintSize);
+
+	//ws2----------------------------------------
+	//[T]预览体测试
+	// ~~测试用 Preview
+private:
+	UPROPERTY(EditAnywhere, Category = "Test")
+	bool bEnablePlacementPreviewTest_ = true;
+
+	UPROPERTY(EditAnywhere, Category = "Test")
+	FIntPoint TestFootprintSize_ = FIntPoint(3, 3);
+
+private:
+	void UpdatePlacementPreviewTest();
 };

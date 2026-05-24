@@ -7,7 +7,9 @@
 // Sets default values
 AArclightGridTileManager::AArclightGridTileManager() {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	//[T]
+	PrimaryActorTick.bCanEverTick = true;
+	//PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -15,12 +17,16 @@ AArclightGridTileManager::AArclightGridTileManager() {
 void AArclightGridTileManager::BeginPlay() {
 	Super::BeginPlay();
 
+	//[P]先生成所有格子
+	GenerateGrid();
 }
 
 // Called every frame
 void AArclightGridTileManager::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
+	//[T]预览体布置测试用
+	UpdatePlacementPreviewTest();
 }
 
 AArclightGridTile* AArclightGridTileManager::GetTileByCoord(const FIntPoint& Coord) const {
@@ -143,6 +149,72 @@ bool AArclightGridTileManager::GetTileUnderCursor(APlayerController* PlayerContr
 
 	OutTile = Cast<AArclightGridTile>(HitResult.GetActor());
 	return OutTile != nullptr;
+}
+
+FIntPoint AArclightGridTileManager::CalcOriginCoordFromAnchor(const FIntPoint& AnchorCoord, const FIntPoint& FootprintSize) const {
+	/*
+		1x1：原点格子与锚点格子一致
+		2x2：原点格子与锚点格子一致
+		3x3：原点格子在锚点格子(-1,-1)处(左下方)(锚点居中)
+		4x4：原点格子在锚点格子(-1,-1)处(左下方)
+		5x5：原点格子在锚点格子(-2,-2)处(左下方)(锚点居中)
+	*/
+	const FIntPoint AnchorOffset(
+		(FootprintSize.X - 1) / 2,
+		(FootprintSize.Y - 1) / 2
+	);
+
+	return AnchorCoord - AnchorOffset;
+}
+
+void AArclightGridTileManager::UpdatePlacementPreview(APlayerController* PlayerController, const FIntPoint& FootprintSize) {
+	AArclightGridTile* CursorTile = nullptr;
+
+	// 找到有效格子
+	if (!GetTileUnderCursor(PlayerController, CursorTile)) {
+		ClearAllHighlights();
+		return;
+	}
+
+	// 当前鼠标所在格子
+	const FIntPoint AnchorCoord = CursorTile->GetGridCoord();
+
+	// 计算建筑锚点格子(左下)
+	const FIntPoint OriginCoord = CalcOriginCoordFromAnchor(AnchorCoord, FootprintSize);
+
+	// 算出所有占地格子
+	const TArray<FIntPoint> Coords =
+		GetFootprintCoords(
+			OriginCoord,
+			FootprintSize
+		);
+
+	// 是否允许放置
+	const bool bCanPlace = CanPlaceAtCoords(Coords);
+
+	// 显示高光
+	ShowFootprintHighlight(Coords, bCanPlace);
+}
+
+void AArclightGridTileManager::UpdatePlacementPreviewTest() {
+	if (!bEnablePlacementPreviewTest_) {
+		ClearAllHighlights();
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World) {
+		ClearAllHighlights();
+		return;
+	}
+
+	APlayerController* PC = World->GetFirstPlayerController();
+	if (!PC) {
+		ClearAllHighlights();
+		return;
+	}
+
+	UpdatePlacementPreview(PC, TestFootprintSize_);
 }
 
 void AArclightGridTileManager::EUFGenerateGrid() {

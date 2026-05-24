@@ -7,6 +7,14 @@
 #include "ArclightController.generated.h"
 
 
+// ~~玩家的行动模式
+UENUM(BlueprintType)
+enum class EPlayerOperationMode : uint8 {
+	Normal     UMETA(DisplayName = "Normal"),
+	Placement  UMETA(DisplayName = "Placement"),
+};
+
+
 UCLASS()
 class PROJECT_PRINSI_API AArclightController : public APlayerController {
 	GENERATED_BODY()
@@ -21,11 +29,16 @@ protected:
 	virtual void SetupInputComponent()override;				// Input组件负责监听IA
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Input Controller")
 	UInputMappingContext* DefaultMappingContext;			// 输入映射上下文
 
 	// ~IA绑定
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Input|Action")
+	UPROPERTY(EditDefaultsOnly, Category = "Input Controller|Action")
 	UInputAction* IA_MovePlayer;			// 主角移动
+
+	//ws--------------------------------------------
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "State Controller")
+	EPlayerOperationMode OperationMode_ = EPlayerOperationMode::Normal;		// 当前玩家的控制状态
 };

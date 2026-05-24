@@ -7,6 +7,8 @@
 #include "ArclightGridTile.generated.h"
 
 
+class UBoxComponent;
+
 UCLASS()
 class PROJECT_PRINSI_API AArclightGridTile : public AActor {
 	GENERATED_BODY()
@@ -32,6 +34,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "GridTile|Component")
 	UStaticMeshComponent* HighlightMesh_;
+
+	//[TODO]根据之后设计考虑是否加入碰撞盒
+	//UPROPERTY(VisibleAnywhere, Category = "GridTile|Component")
+	//UBoxComponent* ColBoxComp_;
 
 	// ~~Misc
 public:

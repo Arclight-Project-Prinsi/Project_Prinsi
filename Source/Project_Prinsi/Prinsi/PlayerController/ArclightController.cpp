@@ -11,6 +11,18 @@ void AArclightController::BeginPlay() {
 		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer())) {
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);		// 从ULocalPlayer处找它的子系统，
 	}
+
+	// ~~[P]鼠标输入＆鼠标显示
+	{
+		bShowMouseCursor = true;
+		bEnableClickEvents = true;
+		bEnableMouseOverEvents = true;	//[P]
+
+		FInputModeGameAndUI InputMode;
+		InputMode.SetHideCursorDuringCapture(false);
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);	//[P]
+		SetInputMode(InputMode);
+	}
 }
 
 void AArclightController::Tick(float DeltaSeconds) {

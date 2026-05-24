@@ -1,6 +1,9 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Prinsi/GridManage/ArclightGridTile.h"
 
+#include "Components/BoxComponent.h"
+
+
 // Sets default values
 AArclightGridTile::AArclightGridTile() {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -10,10 +13,12 @@ AArclightGridTile::AArclightGridTile() {
 	RootComp_ = CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
 	TileMesh_ = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TileMesh"));
 	HighlightMesh_ = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HighlightMesh"));
+	//[p]ColBoxComp_ = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
 
 	RootComponent = RootComp_;
 	TileMesh_->SetupAttachment(RootComponent);
 	HighlightMesh_->SetupAttachment(RootComponent);
+	//[p]ColBoxComp_->SetupAttachment(RootComponent);
 
 	{
 		TileMesh_->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -24,7 +29,7 @@ AArclightGridTile::AArclightGridTile() {
 	{
 		HighlightMesh_->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		HighlightMesh_->SetVisibility(false);
-		HighlightMesh_->SetRelativeLocation(FVector(0.0f, 0.0f, 2.0f));		// 稍微往上挪一点
+		HighlightMesh_->SetRelativeLocation(FVector(0.0f, 0.0f, 5.0f));		// 稍微往上挪一点
 	}
 }
 
