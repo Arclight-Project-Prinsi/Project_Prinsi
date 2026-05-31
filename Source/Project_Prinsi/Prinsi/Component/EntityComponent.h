@@ -32,7 +32,7 @@ public:
 	EEntityType GetEntityType() const { return EntityType_; }
 	EEntityFaction GetFaction() const { return Faction_; }
 
-public:
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity")
 	FName EntityId_;		// 查表标识
 

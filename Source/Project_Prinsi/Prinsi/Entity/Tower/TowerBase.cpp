@@ -6,17 +6,17 @@ ATowerBase::ATowerBase() {
 	PrimaryActorTick.bCanEverTick = true;
 
 	// ~~初始化组件
-	EntityComponent_ = CreateDefaultSubobject<UEntityComponent>(TEXT("EntityComponent"));
+	EntityComp_ = CreateDefaultSubobject<UEntityComponent>(TEXT("EntityComponent"));
 }
 
 void ATowerBase::BeginPlay() {
 	Super::BeginPlay();
 
 	// ~~通过EntityId进行初始化(主表+扩展表)
-	if (!EntityComponent_) {
+	if (!EntityComp_) {
 		UE_LOG(LogTemp, Warning, TEXT("Entity组件为空(TowerBase.cpp)")); return;
 	}
-	if (!InitFromConfig(EntityComponent_->GetEntityId())) {
+	if (!InitFromConfig(EntityComp_->GetEntityId())) {
 		UE_LOG(LogTemp, Warning, TEXT("通过EntityId进行初始化失败(TowerBase.cpp)")); return;
 	}
 }
@@ -42,7 +42,7 @@ bool ATowerBase::InitFromConfig(FName Id) {
 	}
 
 	// ~~Entity组件初始化
-	if (!EntityComponent_->InitFromConfig(BaseConfig)) {
+	if (!EntityComp_->InitFromConfig(BaseConfig)) {
 		UE_LOG(LogTemp, Warning, TEXT("Entity组件初始化失败(TowerBase.cpp)")); return false;
 	}
 

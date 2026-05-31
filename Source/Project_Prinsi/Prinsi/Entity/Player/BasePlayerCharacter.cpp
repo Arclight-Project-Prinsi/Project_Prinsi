@@ -9,7 +9,21 @@ ABasePlayerCharacter::ABasePlayerCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
 
 	// ~~初始化组件
-	EntityComponent_ = CreateDefaultSubobject<UEntityComponent>(TEXT("EntityComponent"));
+	EntityComp_ = CreateDefaultSubobject<UEntityComponent>(TEXT("EntityComponent"));	// Entity组件
+	SpringArmComp_ = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	TopDownCamera_ = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
+
+	// ~摄像机与弹簧臂
+	{
+		SpringArmComp_->SetupAttachment(RootComponent);
+		SpringArmComp_->TargetArmLength = 1400.0f;
+		SpringArmComp_->SetRelativeRotation(FRotator(-50.0f, 45.0f, 0.0f));
+		SpringArmComp_->bUsePawnControlRotation = false;
+
+		TopDownCamera_->SetupAttachment(SpringArmComp_);
+		TopDownCamera_->bUsePawnControlRotation = false;
+		TopDownCamera_->SetFieldOfView(55.0f);			// 视场角(TopDown不需要广角)
+	}
 }
 
 // Called when the game starts or when spawned
@@ -17,10 +31,10 @@ void ABasePlayerCharacter::BeginPlay() {
 	Super::BeginPlay();
 
 	// ~~通过EntityId进行初始化(主表+扩展表)
-	if (!EntityComponent_) {
+	if (!EntityComp_) {
 		UE_LOG(LogTemp, Warning, TEXT("Entity组件为空(BasePlayerCharacter.cpp)")); return;
 	}
-	if (!InitFromConfig(EntityComponent_->GetEntityId())) {
+	if (!InitFromConfig(EntityComp_->GetEntityId())) {
 		UE_LOG(LogTemp, Warning, TEXT("通过EntityId进行初始化失败(BasePlayerCharacter.cpp)")); return;
 	}
 }
@@ -58,7 +72,7 @@ bool ABasePlayerCharacter::InitFromConfig(FName Id) {
 	}
 
 	// ~~Entity组件初始化
-	if (!EntityComponent_->InitFromConfig(BaseConfig)) {
+	if (!EntityComp_->InitFromConfig(BaseConfig)) {
 		UE_LOG(LogTemp, Warning, TEXT("Entity组件初始化失败(BasePlayerCharacter.cpp)")); return false;
 	}
 
