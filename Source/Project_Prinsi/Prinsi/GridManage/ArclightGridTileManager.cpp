@@ -7,9 +7,10 @@
 // Sets default values
 AArclightGridTileManager::AArclightGridTileManager() {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	//[P]
 	//[T]
-	PrimaryActorTick.bCanEverTick = true;
-	//PrimaryActorTick.bCanEverTick = false;
+	//PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -25,8 +26,9 @@ void AArclightGridTileManager::BeginPlay() {
 void AArclightGridTileManager::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
+	//[p]
 	//[T]预览体布置测试用
-	UpdatePlacementPreviewTest();
+	//UpdatePlacementPreviewTest();
 }
 
 AArclightGridTile* AArclightGridTileManager::GetTileByCoord(const FIntPoint& Coord) const {
@@ -44,18 +46,6 @@ bool AArclightGridTileManager::IsValidCoord(const FIntPoint& Coord) const {
 		&& Coord.Y < GridHeight_;
 }
 
-//FVector AArclightGridTileManager::GridCoordToWorldLocation(const FIntPoint& Coord) const {
-//	const FVector Origin = GetActorLocation();
-//
-//	return Origin + FVector(
-//		Coord.X * TileSize_,
-//		Coord.Y * TileSize_,
-//		0.0f
-//	);
-//
-//	return FVector();
-//}
-
 TArray<FIntPoint> AArclightGridTileManager::GetFootprintCoords(const FIntPoint& OriginCoord, const FIntPoint& FootprintSize) const {
 	TArray<FIntPoint> Result;
 	for (int32 Y = 0; Y < FootprintSize.Y; ++Y) {
@@ -66,11 +56,6 @@ TArray<FIntPoint> AArclightGridTileManager::GetFootprintCoords(const FIntPoint& 
 
 	return Result;
 }
-
-//bool AArclightGridTileManager::CanPlaceAtCoord(const FIntPoint& OriginCoord, const FIntPoint& FootprintSize) const {
-//	const TArray<FIntPoint> Coords = GetFootprintCoords(OriginCoord, FootprintSize);
-//	return CanPlaceAtCoords(Coords);
-//}
 
 bool AArclightGridTileManager::CanPlaceAtCoords(const TArray<FIntPoint>& Coords) const {
 	for (const FIntPoint& Coord : Coords) {
@@ -196,26 +181,27 @@ void AArclightGridTileManager::UpdatePlacementPreview(APlayerController* PlayerC
 	ShowFootprintHighlight(Coords, bCanPlace);
 }
 
-void AArclightGridTileManager::UpdatePlacementPreviewTest() {
-	if (!bEnablePlacementPreviewTest_) {
-		ClearAllHighlights();
-		return;
-	}
-
-	UWorld* World = GetWorld();
-	if (!World) {
-		ClearAllHighlights();
-		return;
-	}
-
-	APlayerController* PC = World->GetFirstPlayerController();
-	if (!PC) {
-		ClearAllHighlights();
-		return;
-	}
-
-	UpdatePlacementPreview(PC, TestFootprintSize_);
-}
+//[p]
+//void AArclightGridTileManager::UpdatePlacementPreviewTest() {
+//	if (!bEnablePlacementPreviewTest_) {
+//		ClearAllHighlights();
+//		return;
+//	}
+//
+//	UWorld* World = GetWorld();
+//	if (!World) {
+//		ClearAllHighlights();
+//		return;
+//	}
+//
+//	APlayerController* PC = World->GetFirstPlayerController();
+//	if (!PC) {
+//		ClearAllHighlights();
+//		return;
+//	}
+//
+//	UpdatePlacementPreview(PC, TestFootprintSize_);
+//}
 
 void AArclightGridTileManager::EUFGenerateGrid() {
 #if WITH_EDITOR
