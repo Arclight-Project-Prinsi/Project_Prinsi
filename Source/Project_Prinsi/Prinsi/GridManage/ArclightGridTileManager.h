@@ -104,15 +104,16 @@ public:
 	void UpdatePlacementPreview(APlayerController* PlayerController, const FIntPoint& FootprintSize);
 
 	//ws2----------------------------------------
+	//[p]
 	//[T]预览体测试
 	// ~~测试用 Preview
-private:
-	UPROPERTY(EditAnywhere, Category = "Test")
-	bool bEnablePlacementPreviewTest_ = true;
-
-	UPROPERTY(EditAnywhere, Category = "Test")
-	FIntPoint TestFootprintSize_ = FIntPoint(3, 3);
-
-private:
-	void UpdatePlacementPreviewTest();
+//private:
+//	UPROPERTY(EditAnywhere, Category = "Test")
+//	bool bEnablePlacementPreviewTest_ = true;
+//
+//	UPROPERTY(EditAnywhere, Category = "Test")
+//	FIntPoint TestFootprintSize_ = FIntPoint(3, 3);
+//
+//private:
+//	void UpdatePlacementPreviewTest();
 };
