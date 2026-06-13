@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Prinsi/Define/EntityConfigStructs.h"
+#include "Prinsi/Define/AppDefineEntityStruct.h"
 #include "Components/ActorComponent.h"
 #include "EntityComponent.generated.h"
 
