@@ -38,14 +38,14 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UEntityComponent* EntityComp_;		// 创建Entity组件
+	TObjectPtr<UEntityComponent> EntityComp_;			// Actor Component_实体组件
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity")
-	UDataTable* EntityBaseTable_;			// 实体主表
+	TObjectPtr<UDataTable> EntityBaseTable_;			// 实体主表
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity|Player")
-	UDataTable* PlayerExtraTable_;			// Player类拓展配置表
+	TObjectPtr<UDataTable> PlayerExtraTable_;			// Player类拓展配置表
 
 
 	// ~~Status
@@ -57,10 +57,10 @@ protected:
 	//ws----------------------------------
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	USpringArmComponent* SpringArmComp_;
+	TObjectPtr<USpringArmComponent> SpringArmComp_;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	UCameraComponent* TopDownCamera_;
+	TObjectPtr<UCameraComponent> TopDownCamera_;
 
 	//ws2---------------------------------
 };

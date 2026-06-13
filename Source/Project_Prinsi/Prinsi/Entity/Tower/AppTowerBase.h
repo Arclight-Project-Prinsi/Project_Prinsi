@@ -2,7 +2,7 @@
 #pragma once
 #include "CoreMinimal.h"
 
-#include "Prinsi/Component/EntityComponent.h"		// Component_实体组件
+#include "Prinsi/Component/EntityComponent.h"		// Actor Component_实体组件
 
 #include "GameFramework/Actor.h"
 #include "AppTowerBase.generated.h"
@@ -37,14 +37,14 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Actor Components")
-	UEntityComponent* EntityComp;			// 创建Entity组件
+	TObjectPtr<UEntityComponent> EntityComp;		// Actor Component_实体组件
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Tower|Entity")
-	UDataTable* EntityBaseTable;			// 实体主表
+	TObjectPtr<UDataTable> EntityBaseTable;			// 实体主表
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Tower|Entity")
-	UDataTable* TowerExtraTable;			// Tower类拓展配置表
+	TObjectPtr<UDataTable> TowerExtraTable;			// Tower类拓展配置表
 
 	//ws-------------------------------------
 	// ~~Status

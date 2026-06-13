@@ -43,15 +43,15 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Config Controller|Input")
-	UInputMappingContext* DefaultMappingContext;			// 输入映射上下文
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;			// 输入映射上下文
 
 	// ~IA绑定
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Config Controller|Input")
-	UInputAction* IA_MovePlayer;			// 主角移动
+	TObjectPtr<UInputAction> IA_MovePlayer;			// 主角移动
 
 	UPROPERTY(EditDefaultsOnly, Category = "Config Controller|Input")
-	UInputAction* IA_EnterPlacementMode;	// 进入建造模式
+	TObjectPtr<UInputAction> IA_EnterPlacementMode;	// 进入建造模式
 
 
 
@@ -68,7 +68,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "AppSystem|Placement")
-	AArclightGridTileManager* GridManager;		// 逻辑格子管理器指针
+	TObjectPtr<AArclightGridTileManager> GridManager;		// 逻辑格子管理器指针
 
 protected:
 	void OnEnterPlacementMode();		// 进入建造模式
@@ -79,10 +79,10 @@ protected:
 	AAppTowerBase* CurrentPreviewTower = nullptr;		// 当前预览体
 
 	UPROPERTY(EditAnywhere, Category = "AppSystem|Placement")
-	UMaterialInterface* BuildablePreviewMaterial;
+	TObjectPtr<UMaterialInterface> BuildablePreviewMaterial;
 
 	UPROPERTY(EditAnywhere, Category = "AppSystem|Placement")
-	UMaterialInterface* UnbuildablePreviewMaterial;
+	TObjectPtr<UMaterialInterface> UnbuildablePreviewMaterial;
 
 protected:
 	void CreatePlacementPreviewActor();			// 创建预览体
