@@ -1,10 +1,10 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Prinsi/PlayerController/AppArcPlayerController.h"
 
-#include "Kismet/GameplayStatics.h"						// Tool_UE多功能工具包
-#include "EnhancedInputComponent.h"						//[p]输入增强组件
-#include "Prinsi/GridManage/ArclightGridTileManager.h"	// Manager_逻辑格子管理器
-#include "Prinsi/GridManage/ArclightGridTile.h"			//[p]逻辑格子
+#include "Kismet/GameplayStatics.h"							// Tool_UE多功能工具包
+#include "EnhancedInputComponent.h"							//[p]输入增强组件
+#include "Prinsi/GridManage/ArclightGridTileManager.h"		// Manager_逻辑格子管理器
+#include "Prinsi/AppSystem/GirdManager/AppGridTile.h"
 #include "Prinsi/Entity/Tower/AppTowerBase.h"				//[p]塔基类
 
 
@@ -129,7 +129,7 @@ void AAppArcPlayerController::DestroyPlacementPreviewActor() {
 void AAppArcPlayerController::UpdatePlacementPreviewActor() {
 	if (!GridManager || !CurrentPreviewTower) { return; }
 
-	AArclightGridTile* CursorTile = nullptr;
+	AAppGridTile* CursorTile = nullptr;
 
 	if (!GridManager->GetTileUnderCursor(this, CursorTile)) {
 		SetPreviewTowerVisible(false);

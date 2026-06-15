@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Prinsi/GridManage/ArclightGridTileManager.h"
 
-#include "Prinsi/GridManage/ArclightGridTile.h"		
+#include "Prinsi/AppSystem/GirdManager/AppGridTile.h"		
 
 
 // Sets default values
@@ -31,9 +31,9 @@ void AArclightGridTileManager::Tick(float DeltaTime) {
 	//UpdatePlacementPreviewTest();
 }
 
-AArclightGridTile* AArclightGridTileManager::GetTileByCoord(const FIntPoint& Coord) const {
+AAppGridTile* AArclightGridTileManager::GetTileByCoord(const FIntPoint& Coord) const {
 	// 根据逻辑坐标找到对应格子
-	if (AArclightGridTile* const* FoundTile = GridMap_.Find(Coord)) {
+	if (AAppGridTile* const* FoundTile = GridMap_.Find(Coord)) {
 		return *FoundTile;
 	}
 	return nullptr;
@@ -64,7 +64,7 @@ bool AArclightGridTileManager::CanPlaceAtCoords(const TArray<FIntPoint>& Coords)
 			return false;
 		}
 
-		const AArclightGridTile* Tile = GetTileByCoord(Coord);
+		const AAppGridTile* Tile = GetTileByCoord(Coord);
 		if (!Tile) {
 			return false;
 		}
@@ -91,7 +91,7 @@ bool AArclightGridTileManager::OccupyCoords(const TArray<FIntPoint>& Coords, AAc
 
 	// 设置格子的占领关系
 	for (const FIntPoint& Coord : Coords) {
-		if (AArclightGridTile* Tile = GetTileByCoord(Coord)) {
+		if (AAppGridTile* Tile = GetTileByCoord(Coord)) {
 			Tile->SetTileOccupied(OwnerActor);
 		}
 	}
@@ -101,7 +101,7 @@ bool AArclightGridTileManager::OccupyCoords(const TArray<FIntPoint>& Coords, AAc
 
 void AArclightGridTileManager::ClearOccupiedCoords(const TArray<FIntPoint>& Coords, AActor* OwnerActor) {
 	for (const FIntPoint& Coord : Coords) {
-		AArclightGridTile* Tile = GetTileByCoord(Coord);
+		AAppGridTile* Tile = GetTileByCoord(Coord);
 		if (!Tile) { continue; }
 
 		if (OwnerActor && Tile->GetOccupiedActor() != OwnerActor) { continue; }
@@ -111,7 +111,7 @@ void AArclightGridTileManager::ClearOccupiedCoords(const TArray<FIntPoint>& Coor
 }
 
 void AArclightGridTileManager::ClearAllHighlights() {
-	for (AArclightGridTile* Tile : CurrentHighlightedTiles_) {
+	for (AAppGridTile* Tile : CurrentHighlightedTiles_) {
 		if (Tile) {
 			Tile->ClearTileHighlight();
 		}
@@ -119,7 +119,7 @@ void AArclightGridTileManager::ClearAllHighlights() {
 	CurrentHighlightedTiles_.Empty();
 }
 
-bool AArclightGridTileManager::GetTileUnderCursor(APlayerController* PlayerController, AArclightGridTile*& OutTile) const {
+bool AArclightGridTileManager::GetTileUnderCursor(APlayerController* PlayerController, AAppGridTile*& OutTile) const {
 	OutTile = nullptr;
 
 	// 从当前的控制器的鼠标指针处进行射线检测
@@ -132,7 +132,7 @@ bool AArclightGridTileManager::GetTileUnderCursor(APlayerController* PlayerContr
 	);
 	if (!bHit) { return false; }
 
-	OutTile = Cast<AArclightGridTile>(HitResult.GetActor());
+	OutTile = Cast<AAppGridTile>(HitResult.GetActor());
 	return OutTile != nullptr;
 }
 
@@ -153,7 +153,7 @@ FIntPoint AArclightGridTileManager::CalcOriginCoordFromAnchor(const FIntPoint& A
 }
 
 void AArclightGridTileManager::UpdatePlacementPreview(APlayerController* PlayerController, const FIntPoint& FootprintSize) {
-	AArclightGridTile* CursorTile = nullptr;
+	AAppGridTile* CursorTile = nullptr;
 
 	// 找到有效格子
 	if (!GetTileUnderCursor(PlayerController, CursorTile)) {
@@ -236,7 +236,7 @@ void AArclightGridTileManager::GenerateGrid() {
 			const FTransform SpawnTransform(SpawnLocation);
 
 			// 生成单位格子
-			AArclightGridTile* NewTile = World->SpawnActor<AArclightGridTile>(TileClass_, SpawnTransform);
+			AAppGridTile* NewTile = World->SpawnActor<AAppGridTile>(TileClass_, SpawnTransform);
 			if (!NewTile) {
 				UE_LOG(LogTemp, Warning, TEXT("ERROR_格子生成失败_ArclightGridTileManager.cpp"));
 				continue;
@@ -260,7 +260,7 @@ void AArclightGridTileManager::ClearGrid() {
 	ClearAllHighlights();
 
 	for (auto& Pair : GridMap_) {
-		AArclightGridTile* Tile = Pair.Value;
+		AAppGridTile* Tile = Pair.Value;
 		if (Tile) { Tile->Destroy(); }
 	}
 
@@ -276,7 +276,7 @@ void AArclightGridTileManager::ShowFootprintHighlight(const TArray<FIntPoint>& C
 		: EGridHighlightType::Unbuildable;
 
 	for (const FIntPoint& Coord : Coords) {
-		AArclightGridTile* Tile = GetTileByCoord(Coord);
+		AAppGridTile* Tile = GetTileByCoord(Coord);
 		if (!Tile) {
 			continue;
 		}

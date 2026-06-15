@@ -6,7 +6,7 @@
 #include "ArclightGridTileManager.generated.h"
 
 
-class AArclightGridTile;
+class AAppGridTile;
 
 UCLASS()
 class PROJECT_PRINSI_API AArclightGridTileManager : public AActor {
@@ -27,7 +27,7 @@ public:
 	//WS-------------------------------------------------------
 	// ~~Misc
 public:
-	AArclightGridTile* GetTileByCoord(const FIntPoint& Coord) const;	// 根据逻辑坐标检索格子
+	AAppGridTile* GetTileByCoord(const FIntPoint& Coord) const;	// 根据逻辑坐标检索格子
 	bool IsValidCoord(const FIntPoint& Coord) const;					// 确认逻辑格子是否合法
 
 	// 根据逻辑坐标获取世界坐标	// GridManager的坐标应为0号格子的坐标
@@ -48,10 +48,10 @@ public:
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Ref GridTileManager")
-	TSubclassOf<AArclightGridTile> TileClass_;				// 格子BP
+	TSubclassOf<AAppGridTile> TileClass_;				// 格子BP
 
 	UPROPERTY(VisibleAnywhere, Category = "State GridTileManager")
-	TMap<FIntPoint, AArclightGridTile*> GridMap_;			// 生成的格子	
+	TMap<FIntPoint, AAppGridTile*> GridMap_;			// 生成的格子	
 
 	UPROPERTY(EditAnywhere, Category = "Config GridTileManager")
 	int32 GridWidth_ = 10;		// 横向格子数量
@@ -81,7 +81,7 @@ public:
 	// ~~格子状态高光显示
 private:
 	UPROPERTY()
-	TArray<AArclightGridTile*> CurrentHighlightedTiles_;	// 当前激活状态高光显示的格子
+	TArray<AAppGridTile*> CurrentHighlightedTiles_;	// 当前激活状态高光显示的格子
 
 public:
 	// 启动格子的状态高光显示(可部署)
@@ -93,7 +93,7 @@ public:
 
 	// ~~指针交互(Cursor)
 	// 根据指针获取对应格子
-	bool GetTileUnderCursor(APlayerController* PlayerController, AArclightGridTile*& OutTile) const;
+	bool GetTileUnderCursor(APlayerController* PlayerController, AAppGridTile*& OutTile) const;
 
 	//ws---------------------------------------
 
