@@ -50,6 +50,9 @@ struct  FEntityTowerExtraConfig :public FTableRowBase {
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 BuildCost = 42;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FIntPoint FootprintSize = { -1,-1 };		// 占地
 };
 
 // ~~Player扩展表

@@ -17,13 +17,14 @@ AAppTowerBase::AAppTowerBase() {
 void AAppTowerBase::BeginPlay() {
 	Super::BeginPlay();
 
+	//[p]
 	// ~~通过EntityId进行初始化(主表+扩展表)
-	if (!EntityComp) {
-		UE_LOG(LogTemp, Warning, TEXT("Entity组件为空_TowerBase.cpp")); return;
-	}
-	if (!InitFromConfig(EntityComp->GetEntityId())) {
-		UE_LOG(LogTemp, Warning, TEXT("通过EntityId进行初始化失败(TowerBase.cpp)")); return;
-	}
+	//if (!EntityComp) {
+	//	UE_LOG(LogTemp, Warning, TEXT("Entity组件为空_TowerBase.cpp")); return;
+	//}
+	//if (!InitFromConfig(EntityComp->GetEntityId())) {
+	//	UE_LOG(LogTemp, Warning, TEXT("通过EntityId进行初始化失败(TowerBase.cpp)")); return;
+	//}
 }
 
 bool AAppTowerBase::InitFromConfig(FName Id) {
@@ -75,8 +76,18 @@ bool AAppTowerBase::InitFromConfig(FName Id) {
 bool AAppTowerBase::InitTowerFromConfig(const FEntityTowerExtraConfig* TowerConfig) {
 	if (!TowerConfig) { return false; }
 
-	Damage = TowerConfig->Damage;
-	BuildCost = TowerConfig->BuildCost;
+	Damage = TowerConfig->Damage;				// 伤害
+	BuildCost = TowerConfig->BuildCost;			// 建造花费
+	FootprintSize = TowerConfig->FootprintSize;	// 占地
+
 	return true;
+}
+
+bool AAppTowerBase::InitialTower() {
+	if (bIsActive) { return false; }
+	if (!EntityComp) { return false; }
+
+	bIsActive = InitFromConfig(EntityComp->GetEntityId());
+	return bIsActive;
 }
 

@@ -3,7 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Prinsi/Define/DefineGridManage.h"			//[p]
+#include "Prinsi/Define/AppDefineGridManager.h"			//[p]
 #include "ArclightGridTile.generated.h"
 
 

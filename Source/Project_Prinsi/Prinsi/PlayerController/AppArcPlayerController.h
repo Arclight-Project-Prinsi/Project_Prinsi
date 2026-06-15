@@ -61,10 +61,7 @@ protected:
 	//――――――――――――――――――――
 protected:
 	UPROPERTY(EditAnywhere, Category = "AppSystem|Placement")
-	TSubclassOf<AAppTowerBase> CurrentPlacementTowerClass;	// 当前选中塔的类型	//[TODO]出于测试方便硬编码
-
-	UPROPERTY(EditAnywhere, Category = "AppSystem|Placement")
-	FIntPoint CurrentPlacementFootprint = FIntPoint(2, 2);	// 当前部署所需占地	//[TODO]出于测试方便硬编码
+	TSubclassOf<AAppTowerBase> CurrentPlacementTowerClass;		// 当前选中塔的类型	//[TODO]出于测试方便硬编码
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "AppSystem|Placement")
@@ -76,7 +73,10 @@ protected:
 	//ws2--------------------------------------------
 protected:
 	UPROPERTY()
-	AAppTowerBase* CurrentPreviewTower = nullptr;		// 当前预览体
+	TObjectPtr<AAppTowerBase> CurrentPreviewTower = nullptr;	// 当前预览体对象
+
+	UPROPERTY(VisibleAnywhere, Category = "AppSystem|Placement")
+	FIntPoint CurrentPlacementFootprint = FIntPoint(-1, -1);	// 占地（当前预览体）
 
 	UPROPERTY(EditAnywhere, Category = "AppSystem|Placement")
 	TObjectPtr<UMaterialInterface> BuildablePreviewMaterial;
@@ -85,9 +85,9 @@ protected:
 	TObjectPtr<UMaterialInterface> UnbuildablePreviewMaterial;
 
 protected:
-	void CreatePlacementPreviewActor();			// 创建预览体
-	void DestroyPlacementPreviewActor();			// 销毁预览体
-	void UpdatePlacementPreviewActor();				// 更新预览体
-	void SetPreviewTowerVisible(bool bVisible);		// 设置预览体可视性
+	void CreatePlacementPreviewActor();								// 创建预览体
+	void DestroyPlacementPreviewActor();							// 销毁预览体
+	void UpdatePlacementPreviewActor();								// 更新预览体
+	void SetPreviewTowerVisible(bool bVisible);						// 设置预览体可视性
 	void SetPreviewTowerMaterial(UMaterialInterface* Material);		// 设置预览体材质
 };

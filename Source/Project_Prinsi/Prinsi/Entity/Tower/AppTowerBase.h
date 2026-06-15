@@ -40,20 +40,23 @@ protected:
 	TObjectPtr<UEntityComponent> EntityComp;		// Actor Component_实体组件
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Tower|Entity")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity")
 	TObjectPtr<UDataTable> EntityBaseTable;			// 实体主表
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Tower|Entity")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity|Tower")
 	TObjectPtr<UDataTable> TowerExtraTable;			// Tower类拓展配置表
 
 	//ws-------------------------------------
 	// ~~Status
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status Tower")
-	float Damage = 1.0f;			// 伤害
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = " Config Entity|Tower")
+	float Damage = -1.0f;				// 伤害
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status Tower")
-	int32 BuildCost = 42;			// 建造花费
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config Entity|Tower")
+	int32 BuildCost = 999;				// 建造花费
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Config Entity|Tower")
+	FIntPoint FootprintSize = { -1,-1 };	// 占地
 
 	//ws2-------------------------------------
 	//[p]部署测试
@@ -62,9 +65,16 @@ protected:
 	TObjectPtr<UStaticMeshComponent> TowerMeshComp;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Entity Config|Tower Config")
-	FIntPoint FootprintSize = { 2,2 };		// 部署尺寸
+
 
 public:
 	FIntPoint GetFootprintSize() { return  FootprintSize; }		// Getter_部署尺寸
+
+	//ws3---------------------------------------
+public:
+	bool InitialTower();		//[p]初始化函数
+
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "Status Tower")
+	bool bIsActive = false;		//[p]Active
 };

@@ -10,7 +10,7 @@ AAppPlayerCharacterBase::AAppPlayerCharacterBase() {
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	TopDownCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	
-	// Scene Component Init_Spring Arm
+	// Scene Component Init_弹簧臂
 	{
 		SpringArmComp->SetupAttachment(RootComponent);
 		SpringArmComp->TargetArmLength = 1400.0f;
@@ -18,7 +18,7 @@ AAppPlayerCharacterBase::AAppPlayerCharacterBase() {
 		SpringArmComp->bUsePawnControlRotation = false;
 	}
 
-	// Scene Component Init_Camera
+	// Scene Component Init_摄像机
 	{
 		TopDownCamera->SetupAttachment(SpringArmComp);
 		TopDownCamera->bUsePawnControlRotation = false;

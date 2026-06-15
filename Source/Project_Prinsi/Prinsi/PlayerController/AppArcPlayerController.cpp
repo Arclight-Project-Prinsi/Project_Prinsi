@@ -106,15 +106,17 @@ void AAppArcPlayerController::CreatePlacementPreviewActor() {
 	if (CurrentPreviewTower) { return; }
 	if (!CurrentPlacementTowerClass) { return; }
 
+	// ~~生成预览体&获取占地数据
 	UWorld* World = GetWorld();
 	if (!World) { return; }
-
 	CurrentPreviewTower = World->SpawnActor<AAppTowerBase>(CurrentPlacementTowerClass, FVector::ZeroVector, FRotator::ZeroRotator);
 
 	if (!CurrentPreviewTower) { return; }
-
+	CurrentPreviewTower->InitialTower();		//[p]初始化
 	CurrentPreviewTower->SetActorEnableCollision(false);
 	SetPreviewTowerVisible(false);
+
+	CurrentPlacementFootprint = CurrentPreviewTower->GetFootprintSize();	// 占地
 }
 
 void AAppArcPlayerController::DestroyPlacementPreviewActor() {
@@ -145,11 +147,12 @@ void AAppArcPlayerController::UpdatePlacementPreviewActor() {
 
 
 	//[p]
-	//const FVector PreviewLocation = GridManager_->CalcFootprintCenterWorldLocation(
+	//const FVector PreviewLocation = GridManager->CalcFootprintCenterWorldLocation(
 	//	OriginCoord,
-	//	CurrentPlacementFootprint_
+	//	CurrentPlacementFootprint
 	//);
-	//CurrentPreviewTower_->SetActorLocation(PreviewLocation);
+	//CurrentPreviewTower->SetActorLocation(PreviewLocation);
+
 
 	//[p]先做预览体显示测试
 	CurrentPreviewTower->SetActorLocation(CursorTile->GetActorLocation());
