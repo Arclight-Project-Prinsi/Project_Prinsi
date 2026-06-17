@@ -1,38 +1,41 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Prinsi/PlayerController/AppArcPlayerController.h"
 
-#include "Kismet/GameplayStatics.h"							// Tool_UE多功能工具包
-#include "EnhancedInputComponent.h"							//[p]输入增强组件
-#include "Prinsi/GridManage/ArclightGridTileManager.h"		// Manager_逻辑格子管理器
-#include "Prinsi/AppSystem/GirdManager/AppGridTile.h"
-#include "Prinsi/Entity/Tower/AppTowerBase.h"				//[p]塔基类
+#include "Prinsi/AppSystem/GirdManager/AppGridTileManager.h"	// 逻辑格子管理器
+#include "Kismet/GameplayStatics.h"								// Tool_UE多功能工具包
+#include "Prinsi/Define/AppDefineDebug.h"						// Define_Debug用文件
+#include "EnhancedInputComponent.h"								// Component_输入增强组件
+
+#include "Prinsi/AppSystem/GirdManager/AppGridTile.h"			// @todo
+#include "Prinsi/Entity/Tower/AppTowerBase.h"					// @todo 塔基类
 
 
 void AAppArcPlayerController::BeginPlay() {
 	Super::BeginPlay();
 
-	// ~~绑定IMC至EnhancedInput子系统
+	// 绑定IMC至EnhancedInput子系统
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
-		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer())) {
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);		// 从ULocalPlayer处找它的子系统，
 	}
 
-	// ~~[P]鼠标输入＆鼠标显示
+	//  @note 鼠标输入＆鼠标显示
 	{
 		bShowMouseCursor = true;
 		bEnableClickEvents = true;
-		bEnableMouseOverEvents = true;	//[P]
+		bEnableMouseOverEvents = true;	// @todo
 
 		FInputModeGameAndUI InputMode;
 		InputMode.SetHideCursorDuringCapture(false);
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);	//[P]
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);	// @todo
 		SetInputMode(InputMode);
 	}
 
-	// ~~找到逻辑格子管理器指针(GridManager)
+	// 找到逻辑格子管理器指针(GridManager)
 	if (!GridManager) {
-		GridManager = Cast<AArclightGridTileManager>(
-			UGameplayStatics::GetActorOfClass(GetWorld(), AArclightGridTileManager::StaticClass())
+		GridManager = Cast<AAppGridTileManager>(
+			UGameplayStatics::GetActorOfClass(GetWorld(), AAppGridTileManager::StaticClass())
 		);
 	}
 }
@@ -43,14 +46,19 @@ void AAppArcPlayerController::Tick(float DeltaSeconds) {
 	switch (OperationMode)
 	{
 	case EOperationMode::Normal:
+	{
 		break;
+	}
 
-	case EOperationMode::Placement:	// (Case)预览体&格子的部署合法性检查
-		if (GridManager) {
+	case EOperationMode::Placement:		// Case_预览体位置更新 & 格子的部署合法性检查
+	{
+		if (GridManager)
+		{
 			GridManager->UpdatePlacementPreview(this, CurrentPlacementFootprint);
-			UpdatePlacementPreviewActor();		//[p]更新预览体
+			UpdatePlacementPreviewActor();		// @todo 更新预览体
 		}
 		break;
+	}
 
 	default:
 		break;
@@ -60,8 +68,7 @@ void AAppArcPlayerController::Tick(float DeltaSeconds) {
 void AAppArcPlayerController::SetupInputComponent() {
 	Super::SetupInputComponent();
 
-	// ~~IA响应绑定
-	// IMC触发IA，InputComponent监听IA，Controller响应IA（对应函数）
+	// IA响应绑定
 	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent)) {
 		// 移动玩家角色
 		if (IA_MovePlayer) { EIC->BindAction(IA_MovePlayer, ETriggerEvent::Triggered, this, &AAppArcPlayerController::OnMovePlayer); }
@@ -74,28 +81,30 @@ void AAppArcPlayerController::SetupInputComponent() {
 void AAppArcPlayerController::OnEnterPlacementMode() {
 	switch (OperationMode)
 	{
-	case EOperationMode::Normal:		// 进入建造模式
-		//[T]
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("进入建造模式。"));
 
-		//[p]创建预览体
+	case EOperationMode::Normal:	// Case_进入建造模式
+	{
+		// @note 创建预览体
 		CreatePlacementPreviewActor();
 
 		OperationMode = EOperationMode::Placement;
 		break;
+	}
 
-	case EOperationMode::Placement:	// 退出建造模式
-		//[T]
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("退出建造模式。"));
-
-		//[p]销毁预览体
+	case EOperationMode::Placement:	// Case_退出建造模式
+	{
+		// @note 销毁预览体
 		DestroyPlacementPreviewActor();
 
 		OperationMode = EOperationMode::Normal;
 
-		if (GridManager) { GridManager->ClearAllHighlights(); }	// 关闭格子状态高亮显示
+		if (GridManager)
+		{
+			GridManager->ClearAllHighlights();	// 关闭格子状态高亮显示
+		}	
 
 		break;
+	}
 
 	default:
 		break;
@@ -106,13 +115,13 @@ void AAppArcPlayerController::CreatePlacementPreviewActor() {
 	if (CurrentPreviewTower) { return; }
 	if (!CurrentPlacementTowerClass) { return; }
 
-	// ~~生成预览体&获取占地数据
+	// 生成预览体&获取占地数据
 	UWorld* World = GetWorld();
 	if (!World) { return; }
 	CurrentPreviewTower = World->SpawnActor<AAppTowerBase>(CurrentPlacementTowerClass, FVector::ZeroVector, FRotator::ZeroRotator);
 
 	if (!CurrentPreviewTower) { return; }
-	CurrentPreviewTower->InitialTower();		//[p]初始化
+	CurrentPreviewTower->InitialTower();		// @note 初始化
 	CurrentPreviewTower->SetActorEnableCollision(false);
 	SetPreviewTowerVisible(false);
 
@@ -146,7 +155,7 @@ void AAppArcPlayerController::UpdatePlacementPreviewActor() {
 	const bool bCanPlace = GridManager->CanPlaceAtCoords(Coords);
 
 
-	//[p]
+	// @note
 	//const FVector PreviewLocation = GridManager->CalcFootprintCenterWorldLocation(
 	//	OriginCoord,
 	//	CurrentPlacementFootprint
@@ -154,7 +163,7 @@ void AAppArcPlayerController::UpdatePlacementPreviewActor() {
 	//CurrentPreviewTower->SetActorLocation(PreviewLocation);
 
 
-	//[p]先做预览体显示测试
+	// @note先做预览体显示测试
 	CurrentPreviewTower->SetActorLocation(CursorTile->GetActorLocation());
 
 	SetPreviewTowerVisible(true);
@@ -173,7 +182,7 @@ void AAppArcPlayerController::SetPreviewTowerVisible(bool bVisible) {
 void AAppArcPlayerController::SetPreviewTowerMaterial(UMaterialInterface* Material) {
 	if (!CurrentPreviewTower || !Material) { return; }
 
-	//[p]第一个Mesh？将所有Mesh导入数组？
+	// @note 第一个Mesh？将所有Mesh导入数组？
 	TArray<UStaticMeshComponent*> MeshComponents;
 	CurrentPreviewTower->GetComponents<UStaticMeshComponent>(MeshComponents);
 

@@ -31,10 +31,10 @@ struct  FEntityBaseConfig :public FTableRowBase {
 	FName EntityId;					// [TODO]实体ID（读表时蓝图的EntityId会与RawName匹配，这个字段暂时没意义）
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EEntityType EntityType;			// 实体类型(通过这个判断读哪个扩展表)
+	EEntityType EntityType = EEntityType::EntityNone;			// 实体类型(通过这个判断读哪个扩展表)
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EEntityFaction EntityFaction;	// 实体阵营
+	EEntityFaction EntityFaction = EEntityFaction::FactionNone;	// 实体阵营
 };
 
 // ~~Tower扩展表
