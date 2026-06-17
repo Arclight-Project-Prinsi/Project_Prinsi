@@ -1,5 +1,5 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
-#include "Prinsi/Entity/Player/AppPlayerCharacterBase.h"
+#include "Prinsi/Entity/Character/Player/AppPlayerCharacterBase.h"
 
 
 AAppPlayerCharacterBase::AAppPlayerCharacterBase() {

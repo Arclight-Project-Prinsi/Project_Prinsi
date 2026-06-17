@@ -2,24 +2,26 @@
 #include "Prinsi/Entity/Character/AppCharacterBase.h"
 
 #include "AbilitySystemComponent.h"		// Actor Component_GAS组件
-//#include "GamePlay/GameplayAbility/AttributeSet/AppBaseAttributeSet.h"
+#include "Prinsi\GameplayAbility\AppCharacterAttributeSetBase.h"	// AttributeSet
 #include "GameplayEffect.h"				// GameplayEffect
 
 
 // Sets default values
 AAppCharacterBase::AAppCharacterBase()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+
+	AttributeSet = CreateDefaultSubobject<UAppCharacterAttributeSetBase>(TEXT("AttributeSet"));
 }
 
 // Called when the game starts or when spawned
 void AAppCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	// GA初始化 & Attribute初始化
 	InitAbilitySystem();
 }
@@ -42,11 +44,11 @@ void AAppCharacterBase::InitAbilitySystem()
 {
 	if (AbilitySystemComponent)
 	{
-		// オーナーもAvatarもキャラクター自身	// @note Avatar?
+		// @note Avatar?（目前Owner与Avator应该都是角色自身）
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
-		GiveDeafultAbilities();			// GAの初期化
-		InitDefaultAttributeSet();		// Attributeの初期化
+		GiveDeafultAbilities();			// GA初始化
+		InitDefaultAttributeSet();		// Attribute初始化
 	}
 }
 

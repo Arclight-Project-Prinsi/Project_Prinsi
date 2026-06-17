@@ -41,7 +41,7 @@ public:
 public:
 	UAbilitySystemComponent* GetAbilitySystemComponent()const { return AbilitySystemComponent; }
 	// @todo
-	//UAppBaseAttributeSet* GetAttributeSet() const { return AttributeSet; }
+	UAppCharacterAttributeSetBase* GetAttributeSet() const { return AttributeSet; }
 
 protected:
 	void InitAbilitySystem();

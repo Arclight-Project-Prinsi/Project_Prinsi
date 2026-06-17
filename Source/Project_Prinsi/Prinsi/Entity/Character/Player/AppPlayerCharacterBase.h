@@ -2,16 +2,19 @@
 #pragma once
 #include "CoreMinimal.h"
 
-#include "Prinsi/Component/EntityComponent.h"		// Actor Component_实体组件
-#include "GameFramework/SpringArmComponent.h"		// Scene Component_弹簧臂组件
-#include "Camera/CameraComponent.h"					// Scene Component_相机组件
+#include "Prinsi/Component/EntityComponent.h"			// Actor Component_实体组件
+#include "GameFramework/SpringArmComponent.h"			// Scene Component_弹簧臂组件
+#include "Camera/CameraComponent.h"						// Scene Component_相机组件
 
 #include "GameFramework/Character.h"
+
+#include "Prinsi/Entity/Character/AppCharacterBase.h"	// Character_GAS角色基类
+
 #include "AppPlayerCharacterBase.generated.h"
 
 
 UCLASS()
-class PROJECT_PRINSI_API AAppPlayerCharacterBase : public ACharacter {
+class PROJECT_PRINSI_API AAppPlayerCharacterBase : public AAppCharacterBase {
 	GENERATED_BODY()
 
 public:
