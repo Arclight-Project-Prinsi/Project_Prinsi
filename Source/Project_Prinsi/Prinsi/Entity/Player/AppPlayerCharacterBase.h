@@ -45,16 +45,10 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity")
-	TObjectPtr<UDataTable> EntityBaseTable;			// 实体主表		
+	TObjectPtr<UDataTable> EntityBaseTable;				// 实体主表		
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config Entity|Player")
 	TObjectPtr<UDataTable> PlayerExtraTable;			// Player类拓展配置表
-
-	//ws0-------------------------------
-	// ~~Status
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status Player")
-	int32 Health_ = 42;						// 生命值
 
 	//ws----------------------------------
 protected:

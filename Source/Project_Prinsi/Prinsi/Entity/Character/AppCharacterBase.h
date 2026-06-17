@@ -12,7 +12,7 @@
 //――――――――――――――――――――
 class UAbilitySystemComponent;
 class UGameplayAbility;
-class UAppBaseAttributeSet;
+class UAppCharacterAttributeSetBase;		// AttributeSet
 // @note
 class UGameplayEffect;
 
@@ -53,8 +53,8 @@ protected:
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;	// Actor Component_GA管理组件		
 
 	// @todo
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CharacterBase|Status|GAS")
-	//TObjectPtr<UAppBaseAttributeSet> AttributeSet;				// Attribute
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CharacterBase|Config|GAS")
+	TObjectPtr<UAppCharacterAttributeSetBase> AttributeSet;		// AttributeSet（GAS属性管理）
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterBase|Config|GAS")
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;		// デフォルトのGA

@@ -100,6 +100,5 @@ bool AAppPlayerCharacterBase::InitFromConfig(FName Id) {
 bool AAppPlayerCharacterBase::InitPlayerFromConfig(const FEntityPlayerExtraConfig* PlayerConfig) {
 	if (!PlayerConfig) { return false; }
 
-	Health_ = PlayerConfig->Health;
 	return true;
 }
