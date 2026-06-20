@@ -2,7 +2,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "AppGA_MeleeAttack_One.generated.h"
+#include "AppGA_MeleeAttack_Two.generated.h"
 
 /**
  *
@@ -13,12 +13,12 @@ class UAbilityTask_PlayMontageAndWait;
 
 
 UCLASS()
-class PROJECT_PRINSI_API UAppGA_MeleeAttack_One : public UGameplayAbility
+class PROJECT_PRINSI_API UAppGA_MeleeAttack_Two : public UGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
-	UAppGA_MeleeAttack_One();
+	UAppGA_MeleeAttack_Two();
 
 protected:
 	virtual void ActivateAbility(
@@ -42,7 +42,6 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayAbility|Melee|Config ")
 	TObjectPtr<UAnimMontage> AttackMontage;			// @todo 攻撃AM配列(DAから読み取る？)
-
 
 	// @note GA上にPlayMontageを1つのタスクとして認識される？
 	UPROPERTY()
@@ -75,6 +74,14 @@ protected:
 	void OnPostAbilityMelee(AActor* DashActor, const FVector& EndLocation);		// GAの終了処理(ヴィジュアル層)
 
 	//ws2----------------------------------------------------
+//protected:
+//	// @note GA中にもう一回起動されたら？
+//	virtual void InputPressed(
+//		const FGameplayAbilitySpecHandle Handle,
+//		const FGameplayAbilityActorInfo* ActorInfo,
+//		const FGameplayAbilityActivationInfo ActivationInfo
+//	)override;
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayAbility> NextComboAbility;		// 下一段连击的GA

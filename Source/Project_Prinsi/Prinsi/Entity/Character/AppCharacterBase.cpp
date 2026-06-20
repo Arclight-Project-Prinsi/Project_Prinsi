@@ -59,7 +59,7 @@ void AAppCharacterBase::InitAbilitySystem()
 {
 	if (AbilitySystemComponent)
 	{
-		// @note Avatar?（目前Owner与Avator应该都是角色自身）
+		// @memo Ability的Avator与Owenr都是该角色
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
 		GiveDeafultAbilities();			// GA初始化

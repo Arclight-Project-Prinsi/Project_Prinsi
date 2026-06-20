@@ -6,7 +6,7 @@
  *
  */
 
-#define APP_DEBUG_SCREEN true			// 是否启用AddOnScreenDebugMessage的报错显示
+#define APP_DEFINE_DEBUG_SCREEN true			// 是否启用AddOnScreenDebugMessage的报错显示
 
 
  /* @memo

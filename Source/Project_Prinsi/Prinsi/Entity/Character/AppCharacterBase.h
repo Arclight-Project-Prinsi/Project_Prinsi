@@ -65,4 +65,44 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterBase|Config|GAS")
 	TSubclassOf<UGameplayEffect>InitialAttributeEffect;			// GE_Attribute初期化用
+
+
+	//ws2-------------------------------------
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CharacterBase|Status|GAS|Attack")
+	int32 ComboIndex = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CharacterBase|Status|GAS|Attack")
+	bool bComboWindow = false;
+
+public:
+	int32 GetComboIndex() const { return ComboIndex; }
+
+	void SetComboIndex(int32 InCombo)
+	{
+		ComboIndex = InCombo;
+	}
+
+	bool IsComboWindowOpen() const
+	{
+		return bComboWindow;
+	}
+
+	void SetComboWindow(bool bOpen)
+	{
+		bComboWindow = bOpen;
+	}
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CharacterBase|Status|GAS|Attack")
+	bool bComboInputBuffered = false;
+
+	bool HasComboInputBuffered() const
+	{
+		return bComboInputBuffered;
+	}
+
+	void SetComboInputBuffered(bool bValue)
+	{
+		bComboInputBuffered = bValue;
+	}
 };

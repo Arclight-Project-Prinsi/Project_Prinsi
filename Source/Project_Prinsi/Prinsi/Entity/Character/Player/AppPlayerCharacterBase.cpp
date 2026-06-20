@@ -1,6 +1,8 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Prinsi/Entity/Character/Player/AppPlayerCharacterBase.h"
 #include "Prinsi/Define/AppDefineDebug.h"					// Define_Debug工具
+#include "AbilitySystemComponent.h"
+#include "Abilities/GameplayAbility.h"
 
 
 AAppPlayerCharacterBase::AAppPlayerCharacterBase()
@@ -122,4 +124,45 @@ bool AAppPlayerCharacterBase::InitPlayerFromConfig(const FEntityPlayerExtraConfi
 	}
 
 	return true;
+}
+
+void AAppPlayerCharacterBase::AttackInput()
+{
+	if (!AbilitySystemComponent)
+	{
+		return;
+	}
+
+	//------------------------------------------------
+	// 第一段
+	//------------------------------------------------
+
+	if (ComboIndex == 0)
+	{
+		// @note spec?
+		for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
+		{
+			if (!Spec.Ability)
+			{
+				continue;
+			}
+
+			if (Spec.Ability && Spec.Ability->GetClass()->IsChildOf(AttackAbilityOne))
+			{
+				// @note:Spec.Handle
+				AbilitySystemComponent->TryActivateAbility(Spec.Handle);
+				return;
+			}
+		}
+	}
+
+	//------------------------------------------------
+	// 第二段输入缓存
+	//------------------------------------------------
+
+	if (ComboIndex == 1 && bComboWindow)
+	{
+		bComboInputBuffered = true;
+		return;
+	}
 }

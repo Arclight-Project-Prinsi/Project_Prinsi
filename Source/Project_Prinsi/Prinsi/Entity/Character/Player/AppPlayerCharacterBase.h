@@ -8,6 +8,11 @@
 #include "Prinsi/Entity/Character/AppCharacterBase.h"	// Character_GAS角色基类
 #include "AppPlayerCharacterBase.generated.h"
 
+//――――――――――――――――――――
+// 前向声明
+//――――――――――――――――――――
+class UGameplayAbility;
+
 
 UCLASS()
 class PROJECT_PRINSI_API AAppPlayerCharacterBase : public AAppCharacterBase {
@@ -54,4 +59,17 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterBase|PlayerCharacterBase|Entity|Config")
 	TObjectPtr<UDataTable> PlayerExtraTable;			// Player类拓展配置表
+
+
+	//ws-----------------------------
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterBase|PlayerCharacterBase|Config|GAS|Attack")
+	TSubclassOf<UGameplayAbility> AttackAbilityOne;		// 连击GA1
+
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterBase|PlayerCharacterBase|Config|GAS|Attack")
+	TSubclassOf<UGameplayAbility> AttackAbilityTwo;		// 连击GA2
+
+protected:
+	UFUNCTION(BlueprintCallable)
+	void AttackInput();
 };
