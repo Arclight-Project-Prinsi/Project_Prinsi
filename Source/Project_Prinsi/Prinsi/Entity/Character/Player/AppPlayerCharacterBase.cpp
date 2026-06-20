@@ -133,34 +133,44 @@ void AAppPlayerCharacterBase::AttackInput()
 		return;
 	}
 
-	//------------------------------------------------
-	// 第一段
-	//------------------------------------------------
-
+	// ~~连击启动
 	if (ComboIndex == 0)
 	{
-		// @note spec?
-		for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
-		{
-			if (!Spec.Ability)
-			{
-				continue;
-			}
+		//// @note spec?
+		//for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
+		//{
+		//	if (!Spec.Ability)
+		//	{
+		//		continue;
+		//	}
 
-			if (Spec.Ability && Spec.Ability->GetClass()->IsChildOf(AttackAbilityOne))
-			{
-				// @note:Spec.Handle
-				AbilitySystemComponent->TryActivateAbility(Spec.Handle);
-				return;
-			}
-		}
+		//	if (Spec.Ability && Spec.Ability->GetClass()->IsChildOf(AttackAbilityOne))
+		//	{
+		//		// @note:Spec.Handle
+		//		AbilitySystemComponent->TryActivateAbility(Spec.Handle);
+		//		return;
+		//	}
+		//}
+
+		//--------------
+		FGameplayTagContainer TagContainer;
+		TagContainer.AddTag(FirstAttackAbilityTag);
+
+		// @note 使用tag发动能力，都必须是“一箩筐”？
+		AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer);
+
+		return;
 	}
 
-	//------------------------------------------------
-	// 第二段输入缓存
-	//------------------------------------------------
-
+	// ~~二连击
 	if (ComboIndex == 1 && bComboWindow)
+	{
+		bComboInputBuffered = true;
+		return;
+	}
+
+	// ~~三连击
+	if (ComboIndex == 2 && bComboWindow)
 	{
 		bComboInputBuffered = true;
 		return;

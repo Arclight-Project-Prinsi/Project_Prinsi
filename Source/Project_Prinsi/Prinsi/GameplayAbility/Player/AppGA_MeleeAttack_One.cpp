@@ -104,28 +104,24 @@ void UAppGA_MeleeAttack_One::OnAttackMontageCompleted()
 	if (Character->HasComboInputBuffered())
 	{
 		UAbilitySystemComponent* ASC = CurrentActorInfo->AbilitySystemComponent.Get();
-		if (ASC && NextComboAbility)
+
+		// @todo 检测Tag的存在
+		if (ASC && NextComboAbilityTag.IsValid())
 		{
-			// @memo ASC中的Ability都是Spec，其中包含Ability本体，以及Level等许多信息。
-			for (const FGameplayAbilitySpec& Spec : ASC->GetActivatableAbilities())
+			FGameplayTagContainer TagContainer;
+			TagContainer.AddTag(NextComboAbilityTag);
+
+			Character->SetComboWindow(false);
+			Character->SetComboInputBuffered(false);
+
+			// @note 使用tag发动能力，都必须是“一箩筐”？
+			const bool bActivated = ASC->TryActivateAbilitiesByTag(TagContainer);
+
+			if (bActivated)
 			{
-				if (Spec.Ability && Spec.Ability->GetClass()->IsChildOf(NextComboAbility))
-				{
-					// @todo 这个处理合并一下？
-					Character->SetComboWindow(false);
-					Character->SetComboInputBuffered(false);
-
-					const bool bActivated = ASC->TryActivateAbility(Spec.Handle);
-
-					if (bActivated)
-					{
-						OnAbilityFinished();
-						EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-						return;
-					}
-
-					break;
-				}
+				OnAbilityFinished();
+				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+				return;
 			}
 		}
 	}

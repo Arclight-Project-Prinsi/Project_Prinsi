@@ -1,10 +1,10 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Prinsi/Component/EntityComponent.h"			// Component Actor_实体组件
 #include "GameFramework/SpringArmComponent.h"			// Component Scene_弹簧臂组件
 #include "Camera/CameraComponent.h"						// Component Scene_相机组件
-#include "GameFramework/Character.h"
 #include "Prinsi/Entity/Character/AppCharacterBase.h"	// Character_GAS角色基类
 #include "AppPlayerCharacterBase.generated.h"
 
@@ -63,13 +63,18 @@ protected:
 
 	//ws-----------------------------
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "CharacterBase|PlayerCharacterBase|Config|GAS|Attack")
-	TSubclassOf<UGameplayAbility> AttackAbilityOne;		// 连击GA1
+	//UPROPERTY(EditDefaultsOnly, Category = "CharacterBase|PlayerCharacterBase|Config|GAS|Attack")
+	//TSubclassOf<UGameplayAbility> AttackAbilityOne;		// 连击GA1
 
-	UPROPERTY(EditDefaultsOnly, Category = "CharacterBase|PlayerCharacterBase|Config|GAS|Attack")
-	TSubclassOf<UGameplayAbility> AttackAbilityTwo;		// 连击GA2
+	//UPROPERTY(EditDefaultsOnly, Category = "CharacterBase|PlayerCharacterBase|Config|GAS|Attack")
+	//TSubclassOf<UGameplayAbility> AttackAbilityTwo;		// 连击GA2
 
 protected:
 	UFUNCTION(BlueprintCallable)
 	void AttackInput();
+
+	//ws2--------------------------
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterBase|PlayerCharacterBase|Config|GAS|Attack")
+	FGameplayTag FirstAttackAbilityTag;
 };

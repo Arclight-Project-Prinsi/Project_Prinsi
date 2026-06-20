@@ -1,5 +1,5 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
-#include "Prinsi/GameplayAbility/Player/AppGA_MeleeAttack_Two.h"
+#include "Prinsi/GameplayAbility/Player/AppGA_MeleeAttack_Three.h"
 #include "Prinsi/Define/AppDefineDebug.h"
 #include "Prinsi/GameplayAbility/AppCharacterAttributeSetBase.h"
 #include "Prinsi/Entity/Character/AppCharacterBase.h"			// Actor_基础角色类
@@ -7,12 +7,12 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"		// AbilityTask_播放动画蒙太奇
 
 
-UAppGA_MeleeAttack_Two::UAppGA_MeleeAttack_Two()
+UAppGA_MeleeAttack_Three::UAppGA_MeleeAttack_Three()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
-void UAppGA_MeleeAttack_Two::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+void UAppGA_MeleeAttack_Three::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	// ~~Cost检查
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
@@ -41,9 +41,9 @@ void UAppGA_MeleeAttack_Two::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 
 		if (CurrentPlayMontageTask)
 		{
-			CurrentPlayMontageTask->OnCompleted.AddDynamic(this, &UAppGA_MeleeAttack_Two::OnAttackMontageCompleted);
-			CurrentPlayMontageTask->OnInterrupted.AddDynamic(this, &UAppGA_MeleeAttack_Two::OnAttackMontageInterrupted);
-			CurrentPlayMontageTask->OnCancelled.AddDynamic(this, &UAppGA_MeleeAttack_Two::OnAttackMontageInterrupted);
+			CurrentPlayMontageTask->OnCompleted.AddDynamic(this, &UAppGA_MeleeAttack_Three::OnAttackMontageCompleted);
+			CurrentPlayMontageTask->OnInterrupted.AddDynamic(this, &UAppGA_MeleeAttack_Three::OnAttackMontageInterrupted);
+			CurrentPlayMontageTask->OnCancelled.AddDynamic(this, &UAppGA_MeleeAttack_Three::OnAttackMontageInterrupted);
 			// ~~激活Task
 			CurrentPlayMontageTask->ReadyForActivation();
 		}
@@ -58,7 +58,7 @@ void UAppGA_MeleeAttack_Two::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	}
 }
 
-void UAppGA_MeleeAttack_Two::OnAbilityStart()
+void UAppGA_MeleeAttack_Three::OnAbilityStart()
 {
 	Super::OnAbilityStart();
 
@@ -80,14 +80,14 @@ void UAppGA_MeleeAttack_Two::OnAbilityStart()
 	}
 }
 
-void UAppGA_MeleeAttack_Two::OnAbilityFinished()
+void UAppGA_MeleeAttack_Three::OnAbilityFinished()
 {
 	// @todo 这里可以加入Ability结束前的处理
 
 	Super::OnAbilityFinished();
 }
 
-void UAppGA_MeleeAttack_Two::OnAttackMontageCompleted()
+void UAppGA_MeleeAttack_Three::OnAttackMontageCompleted()
 {
 	if (!CurrentActorInfo)
 	{
@@ -137,12 +137,12 @@ void UAppGA_MeleeAttack_Two::OnAttackMontageCompleted()
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-void UAppGA_MeleeAttack_Two::OnAttackMontageInterrupted()
+void UAppGA_MeleeAttack_Three::OnAttackMontageInterrupted()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
-bool UAppGA_MeleeAttack_Two::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags) const
+bool UAppGA_MeleeAttack_Three::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags) const
 {
 	if (ActorInfo && ActorInfo->AbilitySystemComponent.IsValid())
 	{
@@ -159,7 +159,7 @@ bool UAppGA_MeleeAttack_Two::CheckCost(const FGameplayAbilitySpecHandle Handle, 
 	return false;
 }
 
-void UAppGA_MeleeAttack_Two::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
+void UAppGA_MeleeAttack_Three::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
 	Super::ApplyCost(Handle, ActorInfo, ActivationInfo);
 

@@ -51,7 +51,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayAbility|Melee|Config|Cost")
-	float CostMana = 5.0f;
+	float CostMana = 8.0f;
 
 protected:
 	// @note parameter
@@ -70,14 +70,10 @@ protected:
 
 	//ws2----------------------------------------------------
 //protected:
-//	// @note GA中にもう一回起動されたら？
-//	virtual void InputPressed(
-//		const FGameplayAbilitySpecHandle Handle,
-//		const FGameplayAbilityActorInfo* ActorInfo,
-//		const FGameplayAbilityActivationInfo ActivationInfo
-//	)override;
+//	UPROPERTY(EditDefaultsOnly)
+//	TSubclassOf<UGameplayAbility> NextComboAbility;		// 下一段连击的GA
 
 protected:
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayAbility> NextComboAbility;		// 下一段连击的GA
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayAbility|Melee|Config")
+	FGameplayTag NextComboAbilityTag;		// 下一段连击的Tag
 };
