@@ -21,11 +21,13 @@ public class Project_Prinsi : ModuleRules
             "Niagara",
             "UMG",
             "Slate",
-
 			// @note GAS所需模块
             "GameplayAbilities",
             "GameplayTags",
-            "GameplayTasks"
+            "GameplayTasks",
+            // @note ST/STT所需模块
+            "StateTreeModule",
+            "GameplayStateTreeModule",
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });

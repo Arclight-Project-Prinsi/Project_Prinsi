@@ -1,9 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 #include "CoreMinimal.h"
-
-#include "GameplayTagContainer.h"			// @note 
-
+#include "GameplayTagContainer.h"				// GAS的tag容器
 #include "GameFramework/Character.h"
 #include "AppCharacterBase.generated.h"
 
@@ -13,7 +11,7 @@
 class UAbilitySystemComponent;
 class UGameplayAbility;
 class UAppCharacterAttributeSetBase;		// AttributeSet
-// @note
+// @note 是否需要使用GE?
 class UGameplayEffect;
 
 
@@ -37,27 +35,31 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//ws----------------------------
+
+	//――――――――――――――――――――
+	// GAS部分
+	//――――――――――――――――――――
 public:
 	UAbilitySystemComponent* GetAbilitySystemComponent()const { return AbilitySystemComponent; }
-	// @todo
 	UAppCharacterAttributeSetBase* GetAttributeSet() const { return AttributeSet; }
 
 protected:
-	void InitAbilitySystem();
+	void InitAbilitySystem();			// 初始化AS & 初始化GA
 	void GiveDeafultAbilities();
 	void InitDefaultAttributeSet();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component|Actor Component")
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;	// Actor Component_GA管理组件		
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CharacterBase|Actor Component")
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;	// Actor Component_ASC组件		
 
 	// @todo
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CharacterBase|Config|GAS")
-	TObjectPtr<UAppCharacterAttributeSetBase> AttributeSet;		// AttributeSet（GAS属性管理）
+	TObjectPtr<UAppCharacterAttributeSetBase> AttributeSet;		// AS（GAS属性管理）
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterBase|Config|GAS")
-	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;		// デフォルトのGA
+	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;		// 初始GA
+
+
 
 	//ws1---------------------------------------------------
 protected:

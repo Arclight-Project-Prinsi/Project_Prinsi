@@ -1,9 +1,9 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Prinsi/Entity/Character/AppCharacterBase.h"
-
-#include "AbilitySystemComponent.h"		// Actor Component_GAS组件
 #include "Prinsi\GameplayAbility\AppCharacterAttributeSetBase.h"	// AttributeSet
-#include "GameplayEffect.h"				// GameplayEffect
+#include "AbilitySystemComponent.h"									// Component_Actor_ASC组件
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayEffect.h"											// @note GameplayEffect
 
 
 // Sets default values
@@ -15,6 +15,21 @@ AAppCharacterBase::AAppCharacterBase()
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 
 	AttributeSet = CreateDefaultSubobject<UAppCharacterAttributeSetBase>(TEXT("AttributeSet"));
+
+	// Actor Component Init_移动组件
+	// @memo 玩家朝向根据控制器而非移动组件
+	if (GetCharacterMovement())
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = true;		// Pawn朝向根据移动组件方向决定
+		GetCharacterMovement()->bUseControllerDesiredRotation = false;	// Pawn朝向不根据Controller旋转
+		GetCharacterMovement()->RotationRate = FRotator(0.0f, 640.0f, 0.0f);
+	}
+
+	// @todo 控制器影响玩家Yaw旋转（AI控制器呢？）
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -69,7 +84,7 @@ void AAppCharacterBase::InitDefaultAttributeSet()
 {
 	if (!AbilitySystemComponent || !InitialAttributeEffect)return;
 
-	// @note 
+	// @note 目前是通过读表初始化（是否有必要使用GE初始化？）
 	//FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
 	//// @note 
 	//EffectContext.AddSourceObject(this);
