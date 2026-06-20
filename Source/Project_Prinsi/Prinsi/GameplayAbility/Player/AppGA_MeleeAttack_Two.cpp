@@ -2,18 +2,19 @@
 #include "Prinsi/GameplayAbility/Player/AppGA_MeleeAttack_Two.h"
 #include "Prinsi/Define/AppDefineDebug.h"
 #include "Prinsi/GameplayAbility/AppCharacterAttributeSetBase.h"
-#include "Prinsi/Entity/Character/AppCharacterBase.h"		// @todo
-#include "GameFramework/Character.h"
-#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"		// @note AbilityTask
+#include "Prinsi/Entity/Character/AppCharacterBase.h"			// Actor_基础角色类
+#include "AbilitySystemComponent.h"								// Component_ASC
+#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"		// AbilityTask_播放动画蒙太奇
 
 
 UAppGA_MeleeAttack_Two::UAppGA_MeleeAttack_Two()
 {
-	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;		// @note Actorごと1個のインスタンス？
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
 void UAppGA_MeleeAttack_Two::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	// ~~Cost检查
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		// @note
@@ -25,27 +26,25 @@ void UAppGA_MeleeAttack_Two::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	UAnimMontage* MontageToPlay = AttackMontage;
 	if (Character && MontageToPlay)
 	{
-		OnAbilityMeleeStart();
+		OnAbilityStart();
 
 		// @note UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy
 		CurrentPlayMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 			this,
 			TEXT("PlayAttackMontageTask"),
 			MontageToPlay,
-			1.0f,		// Animation play rate
-			NAME_None,	// 最初から
+			1.0f,			// AM的播放速率
+			NAME_None,		// AM从头播放
 			false,
-			1.0f		// Blend Outの時間
+			1.0f			// 混出(Blendout)时间
 		);
 
-		// @note OnCompleted/OnInterrupted/OnCancelled Abilityタスクの特性？
 		if (CurrentPlayMontageTask)
 		{
 			CurrentPlayMontageTask->OnCompleted.AddDynamic(this, &UAppGA_MeleeAttack_Two::OnAttackMontageCompleted);
 			CurrentPlayMontageTask->OnInterrupted.AddDynamic(this, &UAppGA_MeleeAttack_Two::OnAttackMontageInterrupted);
 			CurrentPlayMontageTask->OnCancelled.AddDynamic(this, &UAppGA_MeleeAttack_Two::OnAttackMontageInterrupted);
-
-			// Abilityタスク準備OK
+			// ~~激活Task
 			CurrentPlayMontageTask->ReadyForActivation();
 		}
 		else
@@ -59,71 +58,61 @@ void UAppGA_MeleeAttack_Two::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	}
 }
 
-void UAppGA_MeleeAttack_Two::OnAbilityMeleeStart()
+void UAppGA_MeleeAttack_Two::OnAbilityStart()
 {
-	if (CurrentActorInfo)
+	Super::OnAbilityStart();
+
+	if (!CurrentActorInfo)
 	{
-		AActor* Avator = CurrentActorInfo->AvatarActor.Get();	// @note AvatorActorからGAの発動対象(Actor)を取得?
-		FVector StartLocation = Avator ? Avator->GetActorLocation() : FVector::ZeroVector;
-		OnPreAbilityMelee(Avator, StartLocation);
+		return;
 	}
 
-	// @todo
-	AAppCharacterBase* Character = Cast<AAppCharacterBase>(CurrentActorInfo->AvatarActor.Get());
-
-	if (Character)
+	if (AActor* Avatar = CurrentActorInfo->AvatarActor.Get())
 	{
-		Character->SetComboIndex(2);				// @todo 设置为2连击
-		Character->SetComboWindow(false);
-		Character->SetComboInputBuffered(false);
+		// ~~设置Actor的攻击状态
+		if (AAppCharacterBase* Character = Cast<AAppCharacterBase>(Avatar))
+		{
+			// ~~设置Actor的攻击状态
+			Character->SetComboIndex(2);				// @todo 设置为2连击
+			Character->SetComboWindow(false);
+			Character->SetComboInputBuffered(false);
+		}
 	}
 }
 
-void UAppGA_MeleeAttack_Two::OnAbilityMeleeFinished()
+void UAppGA_MeleeAttack_Two::OnAbilityFinished()
 {
-	if (CurrentActorInfo)
-	{
-		AActor* Avator = CurrentActorInfo->AvatarActor.Get();	// @note AvatorActorからGAの発動対象(Actor)を取得?
-		FVector EndLocation = Avator ? Avator->GetActorLocation() : FVector::ZeroVector;
-		OnPostAbilityMelee(Avator, EndLocation);
-	}
+	// @todo 这里可以加入Ability结束前的处理
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	Super::OnAbilityFinished();
 }
 
 void UAppGA_MeleeAttack_Two::OnAttackMontageCompleted()
 {
-	/*ResetCombo();
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);*/
-
-	AAppCharacterBase* Character =
-		Cast<AAppCharacterBase>(
-			CurrentActorInfo->AvatarActor.Get());
-
-	if (!Character)
+	if (!CurrentActorInfo)
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-
 		return;
 	}
 
-	//------------------------------------------------
-	// 有二连击输入
-	//------------------------------------------------
+	AAppCharacterBase* Character = Cast<AAppCharacterBase>(CurrentActorInfo->AvatarActor.Get());
+	if (!Character)
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		return;
+	}
 
+	// @todo 暂时没有三连击
+	// ~~A_三连击
 	if (Character->HasComboInputBuffered())
 	{
 		UAbilitySystemComponent* ASC = CurrentActorInfo->AbilitySystemComponent.Get();
-
 		if (ASC && NextComboAbility)
 		{
-			for (const FGameplayAbilitySpec& Spec :
-				ASC->GetActivatableAbilities())
+			for (const FGameplayAbilitySpec& Spec : ASC->GetActivatableAbilities())
 			{
 				if (Spec.Ability && Spec.Ability->GetClass() == NextComboAbility)
 				{
-					ASC->TryActivateAbility(
-						Spec.Handle);
+					ASC->TryActivateAbility(Spec.Handle);
 
 					break;
 				}
@@ -131,35 +120,31 @@ void UAppGA_MeleeAttack_Two::OnAttackMontageCompleted()
 		}
 	}
 
-	//------------------------------------------------
-	// 没有二连击输入
-	//------------------------------------------------
-
+	// ~~B_无三连击输入
 	Character->SetComboIndex(0);
 	Character->SetComboWindow(false);
 	Character->SetComboInputBuffered(false);
 
+	OnAbilityFinished();
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void UAppGA_MeleeAttack_Two::OnAttackMontageInterrupted()
 {
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 bool UAppGA_MeleeAttack_Two::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags) const
 {
 	if (ActorInfo && ActorInfo->AbilitySystemComponent.IsValid())
 	{
-		// @note Attribute set
 		const UAppCharacterAttributeSetBase* AttributeSet =
 			Cast<UAppCharacterAttributeSetBase>(ActorInfo->AbilitySystemComponent->GetAttributeSet(UAppCharacterAttributeSetBase::StaticClass()));
 		if (AttributeSet)
 		{
-			// @memo ATTRIBUTE_ACCESSORS_BASICで定義した
+			// ~~Cost检查_Mana
 			float CurMana = AttributeSet->GetMana();
-
-			return CurMana >= CostMana;	// コストチェック
+			return CurMana >= CostMana;	
 		}
 
 	}
@@ -172,24 +157,14 @@ void UAppGA_MeleeAttack_Two::ApplyCost(const FGameplayAbilitySpecHandle Handle, 
 
 	if (ActorInfo && ActorInfo->AbilitySystemComponent.IsValid())
 	{
-		// @note const_cast&&Cast
 		UAppCharacterAttributeSetBase* AttributeSet =
 			const_cast<UAppCharacterAttributeSetBase*>(Cast<UAppCharacterAttributeSetBase>(ActorInfo->AbilitySystemComponent->GetAttributeSet(UAppCharacterAttributeSetBase::StaticClass())));
 		if (AttributeSet)
 		{
-			// @memo ATTRIBUTE_ACCESSORS_BASICで定義した
+			// ~~Cost消耗_Mana
 			float NewMana = AttributeSet->GetMana() - CostMana;
-
-			// @note Attributeデータを書き込む
 			ActorInfo->AbilitySystemComponent->SetNumericAttributeBase(AttributeSet->GetManaAttribute(), NewMana);
 		}
 
 	}
 }
-
-// @todo
-//void UAppGA_MeleeAttack_One::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
-//{
-//	//[p]
-//	APP_SCREEN_ERROR(TEXT("aaaaa"));
-//}

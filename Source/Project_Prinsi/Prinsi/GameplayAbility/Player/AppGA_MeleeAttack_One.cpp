@@ -3,6 +3,7 @@
 #include "Prinsi/Define/AppDefineDebug.h"
 #include "Prinsi/GameplayAbility/AppCharacterAttributeSetBase.h"
 #include "Prinsi/Entity/Character/AppCharacterBase.h"			// Actor_基础角色类
+#include "AbilitySystemComponent.h"								// Component_ASC
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"		// AbilityTask_播放动画蒙太奇
 
 
@@ -24,17 +25,17 @@ void UAppGA_MeleeAttack_One::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	UAnimMontage* MontageToPlay = AttackMontage;
 	if (Character && MontageToPlay)
 	{
-		OnAbilityMeleeStart();
+		OnAbilityStart();
 
 		// ~~创建Task
 		CurrentPlayMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 			this,
 			TEXT("PlayAttackMontageTask"),
 			MontageToPlay,
-			1.0f,		// AM的播放速率
-			NAME_None,	// AM从头播放
+			1.0f,			// AM的播放速率
+			NAME_None,		// AM从头播放
 			false,
-			1.0f		// 混出(Blendout)时间
+			1.0f			// 混出(Blendout)时间
 		);
 
 		if (CurrentPlayMontageTask)
@@ -48,17 +49,19 @@ void UAppGA_MeleeAttack_One::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 		}
 		else
 		{
-			EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+			EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		}
 	}
 	else
 	{
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 	}
 }
 
-void UAppGA_MeleeAttack_One::OnAbilityMeleeStart()
+void UAppGA_MeleeAttack_One::OnAbilityStart()
 {
+	Super::OnAbilityStart();
+
 	if (!CurrentActorInfo)
 	{
 		return;
@@ -66,10 +69,6 @@ void UAppGA_MeleeAttack_One::OnAbilityMeleeStart()
 
 	if (AActor* Avatar = CurrentActorInfo->AvatarActor.Get())
 	{
-		// ~~蓝图部分Ability的Pre处理
-		FVector StartLocation = Avatar ? Avatar->GetActorLocation() : FVector::ZeroVector;
-		OnPreAbilityMelee(Avatar, StartLocation);
-
 		// ~~设置Actor的攻击状态
 		if (AAppCharacterBase* Character = Cast<AAppCharacterBase>(Avatar))
 		{
@@ -80,26 +79,20 @@ void UAppGA_MeleeAttack_One::OnAbilityMeleeStart()
 	}
 }
 
-void UAppGA_MeleeAttack_One::OnAbilityMeleeFinished()
+void UAppGA_MeleeAttack_One::OnAbilityFinished()
+{
+	// @todo 这里可以加入Ability结束前的处理
+
+	Super::OnAbilityFinished();
+}
+
+void UAppGA_MeleeAttack_One::OnAttackMontageCompleted()
 {
 	if (!CurrentActorInfo)
 	{
 		return;
 	}
 
-	if (AActor* Avatar = CurrentActorInfo->AvatarActor.Get())
-	{
-		// ~~蓝图部分Ability的Post处理
-		FVector EndLocation = Avatar ? Avatar->GetActorLocation() : FVector::ZeroVector;
-		OnPostAbilityMelee(Avatar, EndLocation);
-	}
-
-	// ~~Ability的End处理
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-}
-
-void UAppGA_MeleeAttack_One::OnAttackMontageCompleted()
-{
 	AAppCharacterBase* Character = Cast<AAppCharacterBase>(CurrentActorInfo->AvatarActor.Get());
 	if (!Character)
 	{
@@ -126,7 +119,7 @@ void UAppGA_MeleeAttack_One::OnAttackMontageCompleted()
 
 					if (bActivated)
 					{
-						// ~~Ability的End处理
+						OnAbilityFinished();
 						EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 						return;
 					}
@@ -141,13 +134,14 @@ void UAppGA_MeleeAttack_One::OnAttackMontageCompleted()
 	Character->SetComboIndex(0);
 	Character->SetComboWindow(false);
 	Character->SetComboInputBuffered(false);
+
+	OnAbilityFinished();
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void UAppGA_MeleeAttack_One::OnAttackMontageInterrupted()
 {
-	// ~~Ability的End处理
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 bool UAppGA_MeleeAttack_One::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags) const

@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 #include "CoreMinimal.h"
-#include "Abilities/GameplayAbility.h"
+#include "Prinsi/GameplayAbility/AppGA_AbilityBase.h"
 #include "AppGA_MeleeAttack_One.generated.h"
 
 /**
@@ -13,7 +13,7 @@ class UAbilityTask_PlayMontageAndWait;
 
 
 UCLASS()
-class PROJECT_PRINSI_API UAppGA_MeleeAttack_One : public UGameplayAbility
+class PROJECT_PRINSI_API UAppGA_MeleeAttack_One : public UAppGA_AbilityBase
 {
 	GENERATED_BODY()
 
@@ -28,8 +28,11 @@ protected:
 		const FGameplayEventData* TriggerEventData
 	)override;
 
-	UFUNCTION()
-	void OnAbilityMeleeFinished();			// GAの終了処理(ロジック層)
+	void OnAbilityStart()override;
+
+	void OnAbilityFinished()override;
+
+
 
 	//ws----------------------------------
 protected:
@@ -67,19 +70,10 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo
 	)const override;
 
-protected:
-	UFUNCTION(BlueprintImplementableEvent, Category = "GameplayAbility|Function|Melee")
-	void OnPreAbilityMelee(AActor* DashActor, const FVector& StartLocation);	// GAの開始処理(ヴィジュアル層)
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "GameplayAbility|Function|Melee")
-	void OnPostAbilityMelee(AActor* DashActor, const FVector& EndLocation);		// GAの終了処理(ヴィジュアル層)
-
 	//ws2----------------------------------------------------
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayAbility> NextComboAbility;		// 下一段连击的GA
 
-protected:
-	UFUNCTION()
-	void OnAbilityMeleeStart();				// GAの開始処理(ロジック層)
+
 };
