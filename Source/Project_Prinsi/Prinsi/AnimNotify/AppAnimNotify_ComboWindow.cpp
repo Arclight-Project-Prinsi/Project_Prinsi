@@ -6,6 +6,11 @@
 
 void UAppAnimNotify_ComboWindow::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
+	if (!MeshComp)
+	{
+		return;
+	}
+
 	// @memo Notify限定作用于基础角色
 	AAppCharacterBase* Character = Cast<AAppCharacterBase>(MeshComp->GetOwner());
 	if (Character)

@@ -1,19 +1,16 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 #include "CoreMinimal.h"
-#include "Prinsi/GameplayAbility/AppGA_AbilityBase.h"
+#include "Prinsi/GameplayAbility/AppGA_AbilityAttackBase.h"
 #include "AppGA_MeleeAttack_Two.generated.h"
 
 /**
  *
  */
 
-class UAnimMontage;
-class UAbilityTask_PlayMontageAndWait;
-
 
 UCLASS()
-class PROJECT_PRINSI_API UAppGA_MeleeAttack_Two : public UAppGA_AbilityBase
+class PROJECT_PRINSI_API UAppGA_MeleeAttack_Two : public UAppGA_AbilityAttackBase
 {
 	GENERATED_BODY()
 
@@ -29,51 +26,37 @@ protected:
 	)override;
 
 	void OnAbilityStart()override;
-
 	void OnAbilityFinished()override;
 
+	void OnAttackMontageCompleted()override;
+	void OnAttackMontageInterrupted()override;
 
-	//ws----------------------------------
+
+	// ~~连击部分
 protected:
-	UFUNCTION()
-	void OnAttackMontageCompleted();
-
-	UFUNCTION()
-	void OnAttackMontageInterrupted();
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayAbility|Melee|Config ")
-	TObjectPtr<UAnimMontage> AttackMontage;			// @todo 攻撃AM配列(DAから読み取る？)
-
-	// @note GA上にPlayMontageを1つのタスクとして認識される？
-	UPROPERTY()
-	TObjectPtr<UAbilityTask_PlayMontageAndWait>CurrentPlayMontageTask;
+	virtual void TryActivateNextCombo()override;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayAbility|Melee|Config|Cost")
-	float CostMana = 8.0f;
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayAbility|AttackaAbility|Melee|Config")
+	FGameplayTag NextComboAbilityTag;			// 下一段连击的Tag
 
+
+
+	// ~~Cost部分
 protected:
-	// @note parameter
 	virtual bool CheckCost(
 		const FGameplayAbilitySpecHandle Handle,
 		const FGameplayAbilityActorInfo* ActorInfo,
 		OUT FGameplayTagContainer* OptionalRelevantTags
 	)const override;
 
-	// @note parameter
 	virtual void ApplyCost(
 		const FGameplayAbilitySpecHandle Handle,
 		const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo
 	)const override;
 
-	//ws2----------------------------------------------------
-//protected:
-//	UPROPERTY(EditDefaultsOnly)
-//	TSubclassOf<UGameplayAbility> NextComboAbility;		// 下一段连击的GA
-
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "GameplayAbility|Melee|Config")
-	FGameplayTag NextComboAbilityTag;		// 下一段连击的Tag
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayAbility|AttackaAbility|Melee|Config|Cost")
+	float CostMana = 8.0f;
 };

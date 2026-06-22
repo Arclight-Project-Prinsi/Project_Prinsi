@@ -17,7 +17,6 @@ void UAppGA_MeleeAttack_Two::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	// ~~Cost检查
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
-		// @note
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		return;
 	}
@@ -28,23 +27,24 @@ void UAppGA_MeleeAttack_Two::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	{
 		OnAbilityStart();
 
-		// @note UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy
+		// ~~创建Task
 		CurrentPlayMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 			this,
 			TEXT("PlayAttackMontageTask"),
 			MontageToPlay,
 			1.0f,			// AM的播放速率
 			NAME_None,		// AM从头播放
-			false,
+			true,
 			1.0f			// 混出(Blendout)时间
 		);
 
 		if (CurrentPlayMontageTask)
 		{
+			// ~绑定Delegate
 			CurrentPlayMontageTask->OnCompleted.AddDynamic(this, &UAppGA_MeleeAttack_Two::OnAttackMontageCompleted);
 			CurrentPlayMontageTask->OnInterrupted.AddDynamic(this, &UAppGA_MeleeAttack_Two::OnAttackMontageInterrupted);
 			CurrentPlayMontageTask->OnCancelled.AddDynamic(this, &UAppGA_MeleeAttack_Two::OnAttackMontageInterrupted);
-			// ~~激活Task
+			// ~激活Task
 			CurrentPlayMontageTask->ReadyForActivation();
 		}
 		else
@@ -72,8 +72,8 @@ void UAppGA_MeleeAttack_Two::OnAbilityStart()
 		// ~~设置Actor的攻击状态
 		if (AAppCharacterBase* Character = Cast<AAppCharacterBase>(Avatar))
 		{
-			// ~~设置Actor的攻击状态
-			Character->SetComboIndex(2);				// @todo 设置为2连击
+			// ~~Chracter进入标识状态（攻击）
+			Character->SetComboIndex(2);		// 2连击
 			Character->SetComboWindow(false);
 			Character->SetComboInputBuffered(false);
 		}
@@ -101,38 +101,12 @@ void UAppGA_MeleeAttack_Two::OnAttackMontageCompleted()
 		return;
 	}
 
-	// @todo 暂时没有三连击
-	// ~~A_三连击
-	if (Character->HasComboInputBuffered())
-	{
-		UAbilitySystemComponent* ASC = CurrentActorInfo->AbilitySystemComponent.Get();
-
-		// @todo 检测Tag的存在
-		if (ASC && NextComboAbilityTag.IsValid())
-		{
-			FGameplayTagContainer TagContainer;
-			TagContainer.AddTag(NextComboAbilityTag);
-
-			Character->SetComboWindow(false);
-			Character->SetComboInputBuffered(false);
-
-			// @note 使用tag发动能力，都必须是“一箩筐”？
-			const bool bActivated = ASC->TryActivateAbilitiesByTag(TagContainer);
-
-			if (bActivated)
-			{
-				OnAbilityFinished();
-				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-				return;
-			}
-		}
-	}
-
-	// ~~B_无三连击输入
+	// ~~Chracter退出标识状态（攻击）
 	Character->SetComboIndex(0);
 	Character->SetComboWindow(false);
 	Character->SetComboInputBuffered(false);
 
+	// ~~GA结束
 	OnAbilityFinished();
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
@@ -152,7 +126,7 @@ bool UAppGA_MeleeAttack_Two::CheckCost(const FGameplayAbilitySpecHandle Handle, 
 		{
 			// ~~Cost检查_Mana
 			float CurMana = AttributeSet->GetMana();
-			return CurMana >= CostMana;	
+			return CurMana >= CostMana;
 		}
 
 	}
@@ -174,5 +148,46 @@ void UAppGA_MeleeAttack_Two::ApplyCost(const FGameplayAbilitySpecHandle Handle, 
 			ActorInfo->AbilitySystemComponent->SetNumericAttributeBase(AttributeSet->GetManaAttribute(), NewMana);
 		}
 
+	}
+}
+
+void UAppGA_MeleeAttack_Two::TryActivateNextCombo()
+{
+	Super::TryActivateNextCombo();
+
+	if (!CurrentActorInfo)
+	{
+		return;
+	}
+
+	AAppCharacterBase* Character = Cast<AAppCharacterBase>(CurrentActorInfo->AvatarActor.Get());
+	if (!Character)
+	{
+		return;
+	}
+
+	if (!Character->HasComboInputBuffered())
+	{
+		return;
+	}
+
+	UAbilitySystemComponent* ASC = CurrentActorInfo->AbilitySystemComponent.Get();
+	if (!ASC || !NextComboAbilityTag.IsValid())
+	{
+		return;
+	}
+
+	FGameplayTagContainer TagContainer;
+	TagContainer.AddTag(NextComboAbilityTag);
+
+	Character->SetComboWindow(false);
+	Character->SetComboInputBuffered(false);
+
+	const bool bActivated = ASC->TryActivateAbilitiesByTag(TagContainer);
+	// ~~GA结束
+	if (bActivated)
+	{
+		OnAbilityFinished();
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
 }

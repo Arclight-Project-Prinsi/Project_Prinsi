@@ -1,19 +1,16 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 #include "CoreMinimal.h"
-#include "Prinsi/GameplayAbility/AppGA_AbilityBase.h"
+#include "Prinsi/GameplayAbility/AppGA_AbilityAttackBase.h"
 #include "AppGA_MeleeAttack_One.generated.h"
 
 /**
  *
  */
 
-class UAnimMontage;
-class UAbilityTask_PlayMontageAndWait;
-
 
 UCLASS()
-class PROJECT_PRINSI_API UAppGA_MeleeAttack_One : public UAppGA_AbilityBase
+class PROJECT_PRINSI_API UAppGA_MeleeAttack_One : public UAppGA_AbilityAttackBase
 {
 	GENERATED_BODY()
 
@@ -29,32 +26,22 @@ protected:
 	)override;
 
 	void OnAbilityStart()override;
-
 	void OnAbilityFinished()override;
 
+	void OnAttackMontageCompleted()override;	// 攻击AM完成时
+	void OnAttackMontageInterrupted()override;	// 攻击AM异常中断时
 
 
-	//ws----------------------------------
+	// ~~连击部分
 protected:
-	UFUNCTION()
-	void OnAttackMontageCompleted();
-
-	UFUNCTION()
-	void OnAttackMontageInterrupted();
+	virtual void TryActivateNextCombo()override;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayAbility|Melee|Config ")
-	TObjectPtr<UAnimMontage> AttackMontage;			// @todo 攻撃AM配列(DAから読み取る？)
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayAbility|AttackaAbility|Melee|Config")
+	FGameplayTag NextComboAbilityTag;			// 下一段连击的Tag
 
 
-	// @note GA上にPlayMontageを1つのタスクとして認識される？
-	UPROPERTY()
-	TObjectPtr<UAbilityTask_PlayMontageAndWait>CurrentPlayMontageTask;
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayAbility|Melee|Config|Cost")
-	float CostMana = 5.0f;
-
+	// ~~Cost部分
 protected:
 	// @note parameter
 	virtual bool CheckCost(
@@ -70,9 +57,7 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo
 	)const override;
 
-	//ws2----------------------------------------------------
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "GameplayAbility|Melee|Config")
-	FGameplayTag NextComboAbilityTag;		// 下一段连击的Tag
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayAbility|AttackaAbility|Melee|Config|Cost")
+	float CostMana = 5.0f;
 };
