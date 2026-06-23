@@ -31,12 +31,21 @@ public:
 	// Misc
 	//――――――――――――――――――――
 public:
-	AAppGridTile* GetTileByCoord(const FIntPoint& Coord) const;				// 根据逻辑坐标检索格子
-	bool IsValidCoord(const FIntPoint& Coord) const;						// 确认逻辑格子是否合法
+	// 确认逻辑坐标是否合法
+	bool IsValidCoord(const FIntPoint& Coord) const;
+
+	// 逻辑坐标_GET_逻辑格子
+	AAppGridTile* GetTileByCoord(const FIntPoint& Coord) const;
 
 	// @memo GridManager的坐标应为0号格子的坐标
-	FVector GridCoordToWorldLocation(const FIntPoint& Coord) const;			// 根据逻辑坐标获取世界坐标	
-	FIntPoint WorldLocationToGridCoord(const FVector& WorldLocation) const;	// 根据世界坐标获取逻辑坐标
+	// 逻辑坐标_GET_实际坐标
+	FVector GridCoordToWorldLocation(const FIntPoint& Coord) const;
+
+	// 实际坐标_GET_逻辑坐标(向下取整)
+	FIntPoint WorldLocationToGridCoord(const FVector& WorldLocation) const;
+
+	// 起点逻辑坐标_GET_占地实际坐标
+	FVector CalcFootprintCenterWorldLocation(const FIntPoint& OriginCoord, const FIntPoint& FootprintSize)const;
 
 protected:
 	void GenerateGrid();	// 生成所有格子
@@ -102,14 +111,22 @@ public:
 
 
 	//――――――――――――――――――――
-	// 鼠标指针交互（Cursor）
+	// 预览体＆塔部署
 	//――――――――――――――――――――
 public:
 	bool GetTileUnderCursor(APlayerController* PlayerController, AAppGridTile*& OutTile) const;
 
-	// 通过锚点格子(鼠标)算出建筑原点格子(左下角)
+	//――――――――――
+	// @memo 通过锚点算出逻辑起点
+	//―――
+	// * 1x1：原点格子与锚点格子一致
+	// * 2x2：原点格子与锚点格子一致
+	// * 3x3：原点格子在锚点格子(-1, -1)处(左下方)(锚点居中)
+	// * 4x4：原点格子在锚点格子(-1, -1)处(左下方)
+	// * 5x5：原点格子在锚点格子(-2, -2)处(左下方)(锚点居中)
+	//――――――――――
 	FIntPoint CalcOriginCoordFromAnchor(const FIntPoint& AnchorCoord, const FIntPoint& FootprintSize) const;
 
-	// 更新预览体位置
+	// 更新预览体相关格子状态
 	void UpdatePlacementPreview(APlayerController* PlayerController, const FIntPoint& FootprintSize);
 };

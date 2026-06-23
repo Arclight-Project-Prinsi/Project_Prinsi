@@ -15,4 +15,9 @@ class PROJECT_PRINSI_API AAppAIControllerCommon : public AAIController
 	GENERATED_BODY()
 	
 
+public:
+	AAppAIControllerCommon();
+
+protected:
+	virtual void BeginPlay()override;
 };

@@ -1,6 +1,5 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Prinsi/AppSystem/GirdManager/AppGridTileManager.h"
-
 #include "Prinsi/Define/AppDefineDebug.h"				// Define_Debug工具
 #include "Prinsi/AppSystem/GirdManager/AppGridTile.h"	// Actor_逻辑格子
 
@@ -131,7 +130,7 @@ void AAppGridTileManager::EUFGenerateGrid() {
 #if WITH_EDITOR
 	ClearGrid();
 	GenerateGrid();
-	MarkPackageDirty();		
+	MarkPackageDirty();
 #endif
 }
 
@@ -285,7 +284,8 @@ bool AAppGridTileManager::GetTileUnderCursor(APlayerController* PlayerController
 	return OutTile != nullptr;
 }
 
-FIntPoint AAppGridTileManager::CalcOriginCoordFromAnchor(const FIntPoint& AnchorCoord, const FIntPoint& FootprintSize) const {
+FIntPoint AAppGridTileManager::CalcOriginCoordFromAnchor(const FIntPoint& AnchorCoord, const FIntPoint& FootprintSize) const
+{
 	/*
 		1x1：原点格子与锚点格子一致
 		2x2：原点格子与锚点格子一致
@@ -300,6 +300,23 @@ FIntPoint AAppGridTileManager::CalcOriginCoordFromAnchor(const FIntPoint& Anchor
 
 	return AnchorCoord - AnchorOffset;
 }
+
+FVector AAppGridTileManager::CalcFootprintCenterWorldLocation(const FIntPoint& OriginCoord, const FIntPoint& FootprintSize) const
+{
+	// 获取起点逻辑格子的实际坐标
+	const FVector OriginTileWorldLocation = GridCoordToWorldLocation(OriginCoord);
+
+	if (FootprintSize.X <= 0 || FootprintSize.X <= 0)
+	{
+		APP_WARNING(TEXT("FootprintSize不合法!")); return OriginTileWorldLocation;
+	}
+
+	const float OffsetX = static_cast<float>(FootprintSize.X - 1) * TileSize * 0.5f;
+	const float OffsetY = static_cast<float>(FootprintSize.Y - 1) * TileSize * 0.5f;
+
+	return OriginTileWorldLocation + FVector(OffsetX, OffsetY, 0.0f);
+}
+
 
 void AAppGridTileManager::UpdatePlacementPreview(APlayerController* PlayerController, const FIntPoint& FootprintSize) {
 	AAppGridTile* CursorTile = nullptr;

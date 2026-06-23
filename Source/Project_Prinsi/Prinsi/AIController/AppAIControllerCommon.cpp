@@ -3,3 +3,12 @@
 
 #include "Prinsi/AIController/AppAIControllerCommon.h"
 
+AAppAIControllerCommon::AAppAIControllerCommon()
+{
+
+}
+
+void AAppAIControllerCommon::BeginPlay()
+{
+	Super::BeginPlay();
+}
