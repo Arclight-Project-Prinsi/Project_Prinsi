@@ -17,7 +17,7 @@
  */
  // @note
  //ws2--------------------------------------------------------------
- 
+
 // @memo 声明日志分类
 DECLARE_LOG_CATEGORY_EXTERN(LogPrinsi, Log, All);
 
@@ -29,20 +29,20 @@ DECLARE_LOG_CATEGORY_EXTERN(LogPrinsi, Log, All);
 		*FString::Printf(ParamMessage, ##__VA_ARGS__), TEXT(__FUNCTION__), TEXT(__FILE__), __LINE__ \
 	)
 
-#define APP_WARNING(Format, ...) \
+#define APP_WARNING(ParamMessage, ...) \
 	UE_LOG( \
 		LogPrinsi, \
 		Warning, \
 		TEXT("%s\n[%s]\n[%s:%d]"), \
-		*FString::Printf(Format, ##__VA_ARGS__), TEXT(__FUNCTION__), TEXT(__FILE__), __LINE__ \
+		*FString::Printf(ParamMessage, ##__VA_ARGS__), TEXT(__FUNCTION__), TEXT(__FILE__), __LINE__ \
 	)
 
-#define APP_LOG(Format, ...) \
+#define APP_LOG(ParamMessage, ...) \
 	UE_LOG( \
 		LogPrinsi, \
 		Log, \
 		TEXT("%s\n[%s]\n[%s:%d]"), \
-		*FString::Printf(Format, ##__VA_ARGS__), TEXT(__FUNCTION__), TEXT(__FILE__), __LINE__ \
+		*FString::Printf(ParamMessage, ##__VA_ARGS__), TEXT(__FUNCTION__), TEXT(__FILE__), __LINE__ \
 	)
 
 //ws3-------------------------------------------------------
@@ -53,10 +53,10 @@ DECLARE_LOG_CATEGORY_EXTERN(LogPrinsi, Log, All);
  *	- 内容
  */
 
-#define APP_SCREEN_ERROR(Message) \
+#define APP_SCREEN_ERROR(ParamMessage) \
 	if (GEngine) \
 	{ \
-		FString DebugText = FString::Printf(TEXT("%s [%s]"), Message,TEXT(__FUNCTION__)); \
+		FString DebugText = FString::Printf(TEXT("%s [%s]"), ParamMessage,TEXT(__FUNCTION__)); \
 		GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, DebugText); \
 	}
 
