@@ -47,7 +47,7 @@ void AAppArcPlayerController::BeginPlay()
 	FName temp = "gogogo";
 	APP_ERROR(TEXT("临时测试 = %s"), *temp.ToString());
 
-	APP_SCREEN_ERROR(TEXT("HAO!HAO!HAO!"));
+	APP_SCR_ERROR(TEXT("HAO!HAO!HAO!"));
 }
 
 void AAppArcPlayerController::Tick(float DeltaSeconds)

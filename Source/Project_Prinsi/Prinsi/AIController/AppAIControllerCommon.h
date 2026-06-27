@@ -5,9 +5,9 @@
 #include "EnvironmentQuery/EnvQueryTypes.h" 
 #include "AppAIControllerCommon.generated.h"
 
-// @todo
-class UEnvQuery;
-class UEnvQueryInstanceBlueprintWrapper;
+class UEnvQuery;		// @note
+class UEnvQueryInstanceBlueprintWrapper;	// @note
+class AAppTowerBase;		// @note
 
 
 /**
@@ -26,17 +26,17 @@ protected:
 	void OnPossess(APawn* InPawn)override;
 
 	//ws---------------------------------------
-public:
-	// @note "找点"规则，并非点本身
-	UFUNCTION(BlueprintCallable)
-	void RunFindAssaultPointQuery();		// @note 启动时调用
-
-private:
-	UFUNCTION()
-	void OnFindAssaultPointQueryFinished(
-		UEnvQueryInstanceBlueprintWrapper* QueryInstance,
-		EEnvQueryStatus::Type QueryStatus
-	);
+//public:
+//	// @note "找点"规则，并非点本身
+//	UFUNCTION(BlueprintCallable)
+//	void RunFindAssaultPointQuery();		// @note 启动时调用
+//
+//private:
+//	UFUNCTION()
+//	void OnFindAssaultPointQueryFinished(
+//		UEnvQueryInstanceBlueprintWrapper* QueryInstance,
+//		EEnvQueryStatus::Type QueryStatus
+//	);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI|Config|EQS")
@@ -47,8 +47,10 @@ protected:
 
 	//ws2--------------------------------------
 protected:
+	// @note 这个现在没用
 	void MoveToAssualtPoint();
 
+	// @note 这个现在没用
 	void OnAssultPointQueryFinished(TSharedPtr<FEnvQueryResult>Result);
 
 	//ws3--------------------------------
@@ -59,7 +61,12 @@ protected:
 	void OnAssaultMoveSucceeded();
 	void OnAssaultMoveFailed(EPathFollowingResult::Type ResultCode);
 
-protected:
-	bool bWaitingForAssaultMove = false;		// @note
-	FVector CurrentAssualtPoint = FVector::ZeroVector;
+	//ws4----------------------------------
+	// @todo GetSet
+//protected:
+public:
+	UPROPERTY()
+	TObjectPtr<AAppTowerBase>TargetTower = nullptr;				// @note EQS
+
+
 };

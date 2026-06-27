@@ -5,6 +5,9 @@
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
 #include "Navigation/PathFollowingComponent.h"			// @note 移动结果查询用
+// @todo
+#include "Kismet/GameplayStatics.h"
+#include "Prinsi/Entity/Tower/AppTowerBase.h"
 
 
 AAppAIControllerCommon::AAppAIControllerCommon()
@@ -21,55 +24,69 @@ void AAppAIControllerCommon::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
+	//----------------------------------------------------
+	// @todo 先在场景中找Tower对象测试EQS移动
+	AActor* FoundActor = UGameplayStatics::GetActorOfClass(
+		GetWorld(),
+		AAppTowerBase::StaticClass()
+	);
+	TargetTower = Cast<AAppTowerBase>(FoundActor);
+
+	// @todo
+	if (TargetTower)
+		APP_SCR_ERROR(TEXT("FIND"));
+
+	//----------------------------------------------------
+
 	// @todo 测试EQS
 	//RunFindAssaultPointQuery();
 	MoveToAssualtPoint();
 }
 
-void AAppAIControllerCommon::RunFindAssaultPointQuery()
-{
-	if (!FindAssaultPointQuery)
-	{
-		return;
-	}
+//void AAppAIControllerCommon::RunFindAssaultPointQuery()
+//{
+//	if (!FindAssaultPointQuery)
+//	{
+//		return;
+//	}
+//
+//	UEnvQueryInstanceBlueprintWrapper* QueryInstance =
+//		UEnvQueryManager::RunEQSQuery(
+//			GetWorld(),
+//			FindAssaultPointQuery,
+//			GetPawn(),								// @note Querier
+//			EEnvQueryRunMode::SingleResult,			// @note
+//			nullptr
+//		);
+//
+//	if (!QueryInstance)
+//	{
+//		return;
+//	}
+//
+//	QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &AAppAIControllerCommon::OnFindAssaultPointQueryFinished);
+//}
 
-	UEnvQueryInstanceBlueprintWrapper* QueryInstance =
-		UEnvQueryManager::RunEQSQuery(
-			GetWorld(),
-			FindAssaultPointQuery,
-			GetPawn(),								// @note Querier
-			EEnvQueryRunMode::SingleResult,			// @note
-			nullptr
-		);
-
-	if (!QueryInstance)
-	{
-		return;
-	}
-
-	QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &AAppAIControllerCommon::OnFindAssaultPointQueryFinished);
-}
-
-void AAppAIControllerCommon::OnFindAssaultPointQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
-{
-	if (!QueryInstance || QueryStatus != EEnvQueryStatus::Success)
-	{
-		return;
-	}
-
-	// @note 返回查询结果?
-	TArray<FVector> ResultLocations;
-	QueryInstance->GetQueryResultsAsLocations(ResultLocations);
-
-	// @note 没查询到结果
-	if (ResultLocations.IsEmpty())
-	{
-		return;
-	}
-
-	const FVector AssaultPoint = ResultLocations[0];	// @note 获得第一个结果
-	MoveToLocation(AssaultPoint, AcceptanceRadius);		// @note 这个与AIMoveTo相同吗?
-}
+//void AAppAIControllerCommon::OnFindAssaultPointQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
+//{
+//	if (!QueryInstance || QueryStatus != EEnvQueryStatus::Success)
+//	{
+//		return;
+//	}
+//
+//	// @note 返回查询结果?
+//	TArray<FVector> ResultLocations;
+//	QueryInstance->GetQueryResultsAsLocations(ResultLocations);
+//
+//	// @note 没查询到结果
+//	if (ResultLocations.IsEmpty())
+//	{
+//		return;
+//	}
+//
+//	const FVector AssaultPoint = ResultLocations[0];	// @note 获得第一个结果
+//	MoveToLocation(AssaultPoint, AcceptanceRadius);		// @note 这个与AIMoveTo相同吗?
+//}
 
 void AAppAIControllerCommon::MoveToAssualtPoint()
 {
@@ -84,7 +101,7 @@ void AAppAIControllerCommon::MoveToAssualtPoint()
 		return;
 	}
 
-	// @note
+	// @memo param2_调查主体（即Querier）
 	FEnvQueryRequest QueryRequest(FindAssaultPointQuery, ControlledPawn);
 
 	// @note
@@ -115,22 +132,17 @@ void AAppAIControllerCommon::OnAssultPointQueryFinished(TSharedPtr<FEnvQueryResu
 
 	FVector AssaultPoint = Result->GetItemAsLocation(0);
 
-	CurrentAssualtPoint = AssaultPoint;		// @note 成功测试
-	bWaitingForAssaultMove = true;			// @note 成功测试
-
-
-	const EPathFollowingRequestResult::Type MoveRequestResult =		// @note 成功测试
-		MoveToLocation(AssaultPoint, 50.0f);
-
-	// @note 成功测试
+	// ~~MoveTo任务执行
+	const EPathFollowingRequestResult::Type MoveRequestResult = MoveToLocation(AssaultPoint, 50.0f);
+	// @scaff  MoveTo请求成功测试
 	if (MoveRequestResult == EPathFollowingRequestResult::Failed)
 	{
-		bWaitingForAssaultMove = false;
-		OnAssaultMoveFailed(EPathFollowingResult::Invalid);
+		APP_SCR_ERROR(TEXT("MoveTo请求失败"));
+
 	}
-	else if (MoveRequestResult == EPathFollowingRequestResult::Failed)
+	else if (MoveRequestResult == EPathFollowingRequestResult::AlreadyAtGoal)
 	{
-		bWaitingForAssaultMove = false;
+		APP_SCR_ERROR(TEXT("MoveTo请求失败(已处于终点)"));
 		OnAssaultMoveSucceeded();
 	}
 }
@@ -139,30 +151,24 @@ void AAppAIControllerCommon::OnMoveCompleted(FAIRequestID RequestID, const FPath
 {
 	Super::OnMoveCompleted(RequestID, Result);
 
-	if (!bWaitingForAssaultMove)
-	{
-		return;
-	}
-
-	bWaitingForAssaultMove = false;
-
-	// @note Result本身就有一个Code，根据Code判定MoveTo的处理结果
+	// @scaff  MoveTo请求成功测试
+	// @memo MoveTo本身就有一个Reuslt结果
 	if (Result.Code == EPathFollowingResult::Success)
 	{
-		OnAssaultMoveSucceeded();	// @note 成功
+		OnAssaultMoveSucceeded();
 	}
 	else
 	{
-		OnAssaultMoveFailed(Result.Code);	// @note 失败
+		OnAssaultMoveFailed(Result.Code);
 	}
 }
 
 void AAppAIControllerCommon::OnAssaultMoveSucceeded()
 {
-	APP_SCREEN_ERROR(TEXT("EQS查询后位移成功!"));
+	APP_SCR_ERROR(TEXT("EQS查询后位移成功!"));
 }
 
 void AAppAIControllerCommon::OnAssaultMoveFailed(EPathFollowingResult::Type ResultCode)
 {
-	APP_SCREEN_ERROR(TEXT("EQS查询后位移失败!!"));
+	APP_SCR_ERROR(TEXT("EQS查询后位移失败!!"));
 }

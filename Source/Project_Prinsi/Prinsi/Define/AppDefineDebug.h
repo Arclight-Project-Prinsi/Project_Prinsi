@@ -53,15 +53,16 @@ DECLARE_LOG_CATEGORY_EXTERN(LogPrinsi, Log, All);
  *	- 内容
  */
 
-#define APP_SCREEN_ERROR(ParamMessage) \
+#define APP_SCR_ERROR(ParamMessage) \
 	if (GEngine) \
 	{ \
 		FString DebugText = FString::Printf(TEXT("%s [%s]"), ParamMessage,TEXT(__FUNCTION__)); \
 		GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Red, DebugText); \
 	}
 
+ // @note PreProcess不会在"车厢内"处理东西，下车后该怎么做就怎么做?
 
- //ws--------------------------------------------------------------
+	//ws8--------------------------------------------------------------
 class PROJECT_PRINSI_API AppDefineDebug
 {
 public:
