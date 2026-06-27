@@ -8,6 +8,8 @@
 class UEnvQuery;		// @note
 class UEnvQueryInstanceBlueprintWrapper;	// @note
 class AAppTowerBase;		// @note
+class UStateTreeAIComponent;
+class UStateTree;
 
 
 /**
@@ -68,5 +70,16 @@ public:
 	UPROPERTY()
 	TObjectPtr<AAppTowerBase>TargetTower = nullptr;				// @note EQS
 
+	//ws5----------------------------
+protected:
+	// @todo 是否需要感知组件?
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	//TObjectPtr<UAIPerceptionComponent>PerceptionComp;		// Component_AI感知组件
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	TObjectPtr<UStateTreeAIComponent>StateTreeComp;			// Component_状态树组件
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config AIController")
+	TObjectPtr<UStateTree>StateTree;						// 状态树
 };

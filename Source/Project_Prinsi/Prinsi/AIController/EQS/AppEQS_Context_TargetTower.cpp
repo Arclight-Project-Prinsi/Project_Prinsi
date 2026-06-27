@@ -1,12 +1,12 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
-#include "Prinsi/AIController/EQS/AppEQSContext_TargetTower.h"
+#include "Prinsi/AIController/EQS/AppEQS_Context_TargetTower.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"				// Need_FEnvQueryInstance
 #include "EnvironmentQuery/Items/EnvQueryItemType_Actor.h"		// @note 这个是?
 #include "Prinsi/AIController/AppAIControllerCommon.h"
 #include "Prinsi/Entity/Tower/AppTowerBase.h"			// Actor_Tower基类
 
 
-void UAppEQSContext_TargetTower::ProvideContext(FEnvQueryInstance& QueryInstance, FEnvQueryContextData& ContextData) const
+void UAppEQS_Context_TargetTower::ProvideContext(FEnvQueryInstance& QueryInstance, FEnvQueryContextData& ContextData) const
 {
 	// ~~获得Querier
 	UObject* QueryOwenr = QueryInstance.Owner.Get();

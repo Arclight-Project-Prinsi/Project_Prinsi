@@ -8,16 +8,24 @@
 // @todo
 #include "Kismet/GameplayStatics.h"
 #include "Prinsi/Entity/Tower/AppTowerBase.h"
+// @todo
+#include "Components/StateTreeAIComponent.h"
 
 
 AAppAIControllerCommon::AAppAIControllerCommon()
 {
-
+	StateTreeComp = CreateDefaultSubobject<UStateTreeAIComponent>(TEXT("StateTreeComp"));
 }
 
 void AAppAIControllerCommon::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (StateTreeComp && StateTree)
+	{
+		// @note 状态树组件启动
+		StateTreeComp->StartLogic();
+	}
 }
 
 void AAppAIControllerCommon::OnPossess(APawn* InPawn)
@@ -32,61 +40,11 @@ void AAppAIControllerCommon::OnPossess(APawn* InPawn)
 	);
 	TargetTower = Cast<AAppTowerBase>(FoundActor);
 
-	// @todo
-	if (TargetTower)
-		APP_SCR_ERROR(TEXT("FIND"));
-
 	//----------------------------------------------------
 
 	// @todo 测试EQS
-	//RunFindAssaultPointQuery();
-	MoveToAssualtPoint();
+	//MoveToAssualtPoint();
 }
-
-//void AAppAIControllerCommon::RunFindAssaultPointQuery()
-//{
-//	if (!FindAssaultPointQuery)
-//	{
-//		return;
-//	}
-//
-//	UEnvQueryInstanceBlueprintWrapper* QueryInstance =
-//		UEnvQueryManager::RunEQSQuery(
-//			GetWorld(),
-//			FindAssaultPointQuery,
-//			GetPawn(),								// @note Querier
-//			EEnvQueryRunMode::SingleResult,			// @note
-//			nullptr
-//		);
-//
-//	if (!QueryInstance)
-//	{
-//		return;
-//	}
-//
-//	QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &AAppAIControllerCommon::OnFindAssaultPointQueryFinished);
-//}
-
-//void AAppAIControllerCommon::OnFindAssaultPointQueryFinished(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
-//{
-//	if (!QueryInstance || QueryStatus != EEnvQueryStatus::Success)
-//	{
-//		return;
-//	}
-//
-//	// @note 返回查询结果?
-//	TArray<FVector> ResultLocations;
-//	QueryInstance->GetQueryResultsAsLocations(ResultLocations);
-//
-//	// @note 没查询到结果
-//	if (ResultLocations.IsEmpty())
-//	{
-//		return;
-//	}
-//
-//	const FVector AssaultPoint = ResultLocations[0];	// @note 获得第一个结果
-//	MoveToLocation(AssaultPoint, AcceptanceRadius);		// @note 这个与AIMoveTo相同吗?
-//}
 
 void AAppAIControllerCommon::MoveToAssualtPoint()
 {
