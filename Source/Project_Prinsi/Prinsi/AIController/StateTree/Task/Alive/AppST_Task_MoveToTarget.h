@@ -1,34 +1,32 @@
 ﻿#pragma once
 #include "CoreMinimal.h"
 #include "Prinsi\AIController\StateTree\Task\AppST_Task_NonPlayerBase.h"
-#include "AppST_Task_AcquireTarget.generated.h"
+#include "AppST_Task_MoveToTarget.generated.h"
 
 class AAIController;
 class APawn;
 
 
 USTRUCT()
-struct PROJECT_PRINSI_API FAppST_Task_AcquireTarget : public FAppST_Task_NonPlayerBase
+struct PROJECT_PRINSI_API FAppST_Task_MoveToTarget : public FAppST_Task_NonPlayerBase
 {
 	GENERATED_BODY()
 
-	// @todo
-	//using FInstanceDataType = FAppNonPlayerStateTreeTaskBaseInstanceData;
-	
-	// @todo
-	// ~~STT执行用数据副本
+//	using FInstanceDataType = FAppNonPlayerStateTreeTaskBaseInstanceData;
+//
+//	// ~~STT执行用数据副本
 //public:
 //	virtual const UStruct* GetInstanceDataType() const override
 //	{
 //		return FInstanceDataType::StaticStruct();
 //	}
 
-
+	// @note 这部分完全交给父类?
 	// ~~STT实际执行部分
-public:
-	virtual EStateTreeRunStatus EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const override;
-	virtual EStateTreeRunStatus Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const override;
-	virtual void ExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const override;
+//public:
+//	virtual EStateTreeRunStatus EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const override;
+//	virtual EStateTreeRunStatus Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const override;
+//	virtual void ExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const override;
 
 protected:
 	// 进入State的处理

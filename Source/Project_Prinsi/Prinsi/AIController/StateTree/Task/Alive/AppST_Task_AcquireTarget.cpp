@@ -10,6 +10,7 @@
 EStateTreeRunStatus FAppST_Task_AcquireTarget::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
 {
 	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
+	// @note 确认内容是否有效?
 	InstanceData.AIController = Cast<AAIController>(Context.GetOwner());
 	InstanceData.Pawn = InstanceData.AIController ? InstanceData.AIController->GetPawn() : nullptr;
 
@@ -35,6 +36,9 @@ void FAppST_Task_AcquireTarget::ExitState(FStateTreeExecutionContext& Context, c
 
 EStateTreeRunStatus FAppST_Task_AcquireTarget::OnEnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const
 {
+	// @todo
+	APP_SCR_ERROR(TEXT("开始查询目标Tower!!"));
+
 	AAppAIControllerCommon* AppController = Cast<AAppAIControllerCommon>(InstanceData.AIController);
 	if (!AppController || !InstanceData.Pawn)
 	{
@@ -82,7 +86,7 @@ EStateTreeRunStatus FAppST_Task_AcquireTarget::OnEnterState(FStateTreeExecutionC
 	AppController->TargetTower = NearestTower;
 
 	// @todo
-	APP_SCR_ERROR(TEXT("找到Tower对象辣!!"));
+	APP_SCR_ERROR(TEXT("找到Tower对象!!"));
 
 	// @meme EStateTreeRunStatus::Succeeded_Enter执行完成后，会直接尝试调用Exit的处理。
 	return EStateTreeRunStatus::Succeeded;		// @note 瞬间完成的ST不需要Tick?直接返回完成即可?

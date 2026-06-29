@@ -12,7 +12,6 @@ EStateTreeRunStatus FAppST_Task_NonPlayerBase::EnterState(FStateTreeExecutionCon
 	{
 		return EStateTreeRunStatus::Failed;
 	}
-
 	return OnEnterState(Context, Transition, InstanceData);
 }
 

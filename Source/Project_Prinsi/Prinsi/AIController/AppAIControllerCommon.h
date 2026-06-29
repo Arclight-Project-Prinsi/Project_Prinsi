@@ -11,6 +11,18 @@ class AAppTowerBase;		// @note
 class UStateTreeAIComponent;
 class UStateTree;
 
+// @note enum class?
+// @note 用于表示角色当前的移动状态
+UENUM()
+enum class EAppMoveStatus :uint8
+{
+	Idle,
+	Query,
+	Moving,
+	Succeded,
+	Failed,
+};
+
 
 /**
  *
@@ -82,4 +94,15 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config AIController")
 	TObjectPtr<UStateTree>StateTree;						// 状态树
+
+	//ws6------------------------------
+public:
+	EAppMoveStatus MoveStatus = EAppMoveStatus::Idle;
+
+public:
+	bool RequestMoveToAssaultPoint();
+	void AbortAssaultMove();
+
+protected:
+	bool bWaitingForAssaultMove = false;		// @note
 };
