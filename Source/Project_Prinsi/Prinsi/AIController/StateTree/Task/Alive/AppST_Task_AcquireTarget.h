@@ -1,46 +1,38 @@
-#pragma once
+ï»¿#pragma once
 #include "CoreMinimal.h"
 #include "Prinsi\AIController\StateTree\Task\AppST_Task_NonPlayerBase.h"
 #include "AppST_Task_AcquireTarget.generated.h"
-
-// @todo
-// PrinsiStateTreeTaskBase.generated
 
 class AAIController;
 class APawn;
 
 
-// @note ‰ÂˆÈ’è§Šù“Iã‰º•¶?
 USTRUCT()
 struct PROJECT_PRINSI_API FAppST_Task_AcquireTarget : public FAppST_Task_NonPlayerBase
 {
 	GENERATED_BODY()
 
-	// @note ‰ÂˆÈ’è§Šù“Iã‰º•¶?
 	using FInstanceDataType = FAppNonPlayerStateTreeTaskBaseInstanceData;
 
+	// ~~STTæ‰§è¡Œç”¨æ•°æ®å‰¯æœ¬
+public:
 	virtual const UStruct* GetInstanceDataType() const override
 	{
 		return FInstanceDataType::StaticStruct();
 	}
 
+
+	// ~~STTå®é™…æ‰§è¡Œéƒ¨åˆ†
+public:
 	virtual EStateTreeRunStatus EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const override;
 	virtual EStateTreeRunStatus Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const override;
 	virtual void ExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const override;
 
 protected:
-	virtual EStateTreeRunStatus OnEnterState(
-		FStateTreeExecutionContext& Context,
-		const FStateTreeTransitionResult& Transition,
-		FInstanceDataType& InstanceData) const;
-
-	virtual EStateTreeRunStatus OnTick(
-		FStateTreeExecutionContext& Context,
-		const float DeltaTime,
-		FInstanceDataType& InstanceData) const;
-
-	virtual void OnExitState(
-		FStateTreeExecutionContext& Context,
-		const FStateTreeTransitionResult& Transition,
-		FInstanceDataType& InstanceData) const;
+	// è¿›å…¥Stateçš„å¤„ç†
+	virtual EStateTreeRunStatus OnEnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const;
+	// Stateæ›´æ–°å¤„ç†
+	virtual EStateTreeRunStatus OnTick(FStateTreeExecutionContext& Context, const float DeltaTime, FInstanceDataType& InstanceData) const;
+	// é€€å‡ºStateå¤„ç†
+	virtual void OnExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const;
 };

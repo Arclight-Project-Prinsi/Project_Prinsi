@@ -3,17 +3,11 @@
 #include "AIController.h"
 
 
-// @note
-EStateTreeRunStatus FAppST_Task_NonPlayerBase::EnterState(
-	FStateTreeExecutionContext& Context,
-	const FStateTreeTransitionResult& Transition) const
+EStateTreeRunStatus FAppST_Task_NonPlayerBase::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
 {
 	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
-
 	InstanceData.AIController = Cast<AAIController>(Context.GetOwner());
-
 	InstanceData.Pawn = InstanceData.AIController ? InstanceData.AIController->GetPawn() : nullptr;
-
 	if (!InstanceData.AIController || !InstanceData.Pawn)
 	{
 		return EStateTreeRunStatus::Failed;
@@ -22,43 +16,29 @@ EStateTreeRunStatus FAppST_Task_NonPlayerBase::EnterState(
 	return OnEnterState(Context, Transition, InstanceData);
 }
 
-EStateTreeRunStatus FAppST_Task_NonPlayerBase::Tick(
-	FStateTreeExecutionContext& Context,
-	const float DeltaTime) const
+EStateTreeRunStatus FAppST_Task_NonPlayerBase::Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const
 {
 	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
-
 	return OnTick(Context, DeltaTime, InstanceData);
 }
 
-void FAppST_Task_NonPlayerBase::ExitState(
-	FStateTreeExecutionContext& Context,
-	const FStateTreeTransitionResult& Transition) const
+void FAppST_Task_NonPlayerBase::ExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
 {
 	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
-
 	OnExitState(Context, Transition, InstanceData);
 }
 
-EStateTreeRunStatus FAppST_Task_NonPlayerBase::OnEnterState(
-	FStateTreeExecutionContext& Context,
-	const FStateTreeTransitionResult& Transition,
-	FInstanceDataType& InstanceData) const
+EStateTreeRunStatus FAppST_Task_NonPlayerBase::OnEnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const
 {
 	return EStateTreeRunStatus::Running;
 }
 
-EStateTreeRunStatus FAppST_Task_NonPlayerBase::OnTick(
-	FStateTreeExecutionContext& Context,
-	const float DeltaTime,
-	FInstanceDataType& InstanceData) const
+EStateTreeRunStatus FAppST_Task_NonPlayerBase::OnTick(FStateTreeExecutionContext& Context, const float DeltaTime, FInstanceDataType& InstanceData) const
 {
 	return EStateTreeRunStatus::Running;
 }
 
-void FAppST_Task_NonPlayerBase::OnExitState(
-	FStateTreeExecutionContext& Context,
-	const FStateTreeTransitionResult& Transition,
-	FInstanceDataType& InstanceData) const
+void FAppST_Task_NonPlayerBase::OnExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const
 {
+
 }

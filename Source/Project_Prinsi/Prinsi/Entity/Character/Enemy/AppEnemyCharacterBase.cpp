@@ -12,5 +12,6 @@ void AAppEnemyCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AddDeadTag();
+	// @todo 敌人死亡State测试
+	/*AddDeadTag();*/
 }

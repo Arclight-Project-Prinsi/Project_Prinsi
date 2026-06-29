@@ -3,14 +3,10 @@
 #include "Prinsi\AIController\StateTree\Task\AppST_Task_NonPlayerBase.h"
 #include "AppST_Task_Dead.generated.h"
 
-// @todo
-// PrinsiStateTreeTaskBase.generated
-
 class AAIController;
 class APawn;
 
 
-// @note ‰ÂˆÈ’è§Šù“Iã‰º•¶?
 USTRUCT()
 struct PROJECT_PRINSI_API FAppST_Task_Dead : public FAppST_Task_NonPlayerBase
 {

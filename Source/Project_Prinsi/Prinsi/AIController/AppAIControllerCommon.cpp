@@ -34,11 +34,11 @@ void AAppAIControllerCommon::OnPossess(APawn* InPawn)
 
 	//----------------------------------------------------
 	// @todo 先在场景中找Tower对象测试EQS移动
-	AActor* FoundActor = UGameplayStatics::GetActorOfClass(
-		GetWorld(),
-		AAppTowerBase::StaticClass()
-	);
-	TargetTower = Cast<AAppTowerBase>(FoundActor);
+	//AActor* FoundActor = UGameplayStatics::GetActorOfClass(
+	//	GetWorld(),
+	//	AAppTowerBase::StaticClass()
+	//);
+	//TargetTower = Cast<AAppTowerBase>(FoundActor);
 
 	//----------------------------------------------------
 
