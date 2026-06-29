@@ -1,6 +1,8 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Prinsi/Entity/Character/AppCharacterBase.h"
-#include "Prinsi\GameplayAbility\AppCharacterAttributeSetBase.h"	// AttributeSet
+#include "Prinsi/Define/AppDefineDebug.h"
+#include "Prinsi/Define/AppDefineGameplayTag.h"
+#include "Prinsi/GameplayAbility/AppCharacterAttributeSetBase.h"	// AttributeSet
 #include "AbilitySystemComponent.h"									// Component_Actor_ASC组件
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayEffect.h"											// @note GameplayEffect
@@ -95,5 +97,48 @@ void AAppCharacterBase::InitDefaultAttributeSet()
 	//	// @note 
 	//	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	//}
+}
+
+void AAppCharacterBase::AddDeadTag()
+{
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponent();
+	if (!ASC)
+	{
+		return;
+	}
+
+	// @note loose
+	if (!ASC->HasMatchingGameplayTag(AppDefineGameplayTag::Character_State_Dead))
+	{
+		ASC->AddLooseGameplayTag(AppDefineGameplayTag::Character_State_Dead);
+
+		// @todo 测试死亡State转换
+		APP_SCR_ERROR(TEXT("添加Tag成功!"));
+	}
+}
+
+void AAppCharacterBase::RemoveDeadTag()
+{
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponent();
+	if (!ASC)
+	{
+		return;
+	}
+
+	if (ASC->HasMatchingGameplayTag(AppDefineGameplayTag::Character_State_Dead))
+	{
+		ASC->RemoveLooseGameplayTag(AppDefineGameplayTag::Character_State_Dead);
+	}
+}
+
+bool AAppCharacterBase::HasDeadTag()const
+{
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponent();
+	if (!ASC)
+	{
+		return false;
+	}
+
+	return ASC->HasMatchingGameplayTag(AppDefineGameplayTag::Character_State_Dead);
 }
 

@@ -6,13 +6,16 @@
 #include "AppEnemyCharacterBase.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class PROJECT_PRINSI_API AAppEnemyCharacterBase : public AAppCharacterBase
 {
 	GENERATED_BODY()
-	
+
 public:
 	AAppEnemyCharacterBase();
+
+protected:
+	virtual void BeginPlay()override;
 };

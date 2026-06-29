@@ -105,4 +105,10 @@ public:
 	{
 		bComboInputBuffered = bValue;
 	}
+
+	//ws3--------------------------------------------
+public:
+	void AddDeadTag();
+	void RemoveDeadTag();
+	bool HasDeadTag()const;
 };

@@ -1,11 +1,11 @@
-#include "Prinsi/AIController/StateTree/Task/Dead/AppST_Task_Dead.h"
+#include "Prinsi/AIController/StateTree/Task/Alive/AppST_Task_AcquireTarget.h"
 #include "StateTreeExecutionContext.h"		// Need_FStateTreeExecutionContext_STTè„â∫ï∂ì‡óe
 #include "Prinsi/Define/AppDefineDebug.h"
 #include "AIController.h"
 
 
 // @note
-EStateTreeRunStatus FAppST_Task_Dead::EnterState(
+EStateTreeRunStatus FAppST_Task_AcquireTarget::EnterState(
 	FStateTreeExecutionContext& Context,
 	const FStateTreeTransitionResult& Transition) const
 {
@@ -23,19 +23,19 @@ EStateTreeRunStatus FAppST_Task_Dead::EnterState(
 	return OnEnterState(Context, Transition, InstanceData);
 }
 
-EStateTreeRunStatus FAppST_Task_Dead::Tick(
+EStateTreeRunStatus FAppST_Task_AcquireTarget::Tick(
 	FStateTreeExecutionContext& Context,
 	const float DeltaTime) const
 {
 	// @todo
-	APP_SCR_ERROR(TEXT("Dead"));
+	APP_SCR_ERROR(TEXT("or Alive."));
 
 	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 
 	return OnTick(Context, DeltaTime, InstanceData);
 }
 
-void FAppST_Task_Dead::ExitState(
+void FAppST_Task_AcquireTarget::ExitState(
 	FStateTreeExecutionContext& Context,
 	const FStateTreeTransitionResult& Transition) const
 {
@@ -44,7 +44,7 @@ void FAppST_Task_Dead::ExitState(
 	OnExitState(Context, Transition, InstanceData);
 }
 
-EStateTreeRunStatus FAppST_Task_Dead::OnEnterState(
+EStateTreeRunStatus FAppST_Task_AcquireTarget::OnEnterState(
 	FStateTreeExecutionContext& Context,
 	const FStateTreeTransitionResult& Transition,
 	FInstanceDataType& InstanceData) const
@@ -52,7 +52,7 @@ EStateTreeRunStatus FAppST_Task_Dead::OnEnterState(
 	return EStateTreeRunStatus::Running;
 }
 
-EStateTreeRunStatus FAppST_Task_Dead::OnTick(
+EStateTreeRunStatus FAppST_Task_AcquireTarget::OnTick(
 	FStateTreeExecutionContext& Context,
 	const float DeltaTime,
 	FInstanceDataType& InstanceData) const
@@ -60,7 +60,7 @@ EStateTreeRunStatus FAppST_Task_Dead::OnTick(
 	return EStateTreeRunStatus::Running;
 }
 
-void FAppST_Task_Dead::OnExitState(
+void FAppST_Task_AcquireTarget::OnExitState(
 	FStateTreeExecutionContext& Context,
 	const FStateTreeTransitionResult& Transition,
 	FInstanceDataType& InstanceData) const
