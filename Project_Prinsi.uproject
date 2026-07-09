@@ -9,7 +9,10 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine"
+				"Engine",
+				"GameplayAbilities",
+				"AIModule",
+				"GameplayStateTreeModule"
 			]
 		}
 	],
@@ -27,6 +30,10 @@
 		},
 		{
 			"Name": "GameplayStateTree",
+			"Enabled": true
+		},
+		{
+			"Name": "GameplayAbilities",
 			"Enabled": true
 		}
 	]

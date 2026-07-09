@@ -1,46 +1,55 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 
 public class Project_Prinsi : ModuleRules
 {
-	public Project_Prinsi(ReadOnlyTargetRules Target) : base(Target)
-	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+    public Project_Prinsi(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] {
-			"Core",
-			"CoreUObject",
-			"Engine",
-			"InputCore",
-			"EnhancedInput",
-			"AIModule",
-			"NavigationSystem",
-			"StateTreeModule",
-			"GameplayStateTreeModule",
-			"Niagara",
-			"UMG",
-			"Slate"
-		});
+        PublicDependencyModuleNames.AddRange(new string[] {
+            "Core",
+            "CoreUObject",
+            "Engine",
+            "InputCore",
+            "EnhancedInput",
+            "AIModule",
+            "NavigationSystem",
+            "StateTreeModule",
+            "GameplayStateTreeModule",
+            "Niagara",
+            "UMG",
+            "Slate",
+			// @memo GAS所需模块
+            "GameplayAbilities",       // Ability
+            "GameplayTags",            // Gameplay Tag
+            "GameplayTasks",           // Ability Task 
+            // @note ST/STT所需模块
+            "StateTreeModule",
+            "GameplayStateTreeModule",
+            // @note EQS所需模块
+            "AIModule"
+        });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { });
+        PrivateDependencyModuleNames.AddRange(new string[] { });
 
-		PublicIncludePaths.AddRange(new string[] {
-			"Project_Prinsi",
-			"Project_Prinsi/Variant_Strategy",
-			"Project_Prinsi/Variant_Strategy/UI",
-			"Project_Prinsi/Variant_TwinStick",
-			"Project_Prinsi/Variant_TwinStick/AI",
-			"Project_Prinsi/Variant_TwinStick/Gameplay",
-			"Project_Prinsi/Variant_TwinStick/UI"
-		});
+        PublicIncludePaths.AddRange(new string[] {
+            "Project_Prinsi",
+            "Project_Prinsi/Variant_Strategy",
+            "Project_Prinsi/Variant_Strategy/UI",
+            "Project_Prinsi/Variant_TwinStick",
+            "Project_Prinsi/Variant_TwinStick/AI",
+            "Project_Prinsi/Variant_TwinStick/Gameplay",
+            "Project_Prinsi/Variant_TwinStick/UI"
+        });
 
-		// Uncomment if you are using Slate UI
-		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+        // Uncomment if you are using Slate UI
+        // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 
-		// Uncomment if you are using online features
-		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
+        // Uncomment if you are using online features
+        // PrivateDependencyModuleNames.Add("OnlineSubsystem");
 
-		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
-	}
+        // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
+    }
 }
