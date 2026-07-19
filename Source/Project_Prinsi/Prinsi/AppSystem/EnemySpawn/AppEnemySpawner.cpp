@@ -33,6 +33,9 @@ void AAppEnemySpawner::Tick(float DeltaTime)
 
 }
 
+/**
+* @brief　	敌人生成函数
+*/
 AAppEnemyCharacterBase* AAppEnemySpawner::SpawnEnemy()
 {
 	if (!EnemyClass)

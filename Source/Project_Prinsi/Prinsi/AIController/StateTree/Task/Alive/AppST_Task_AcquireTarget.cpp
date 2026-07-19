@@ -9,10 +9,6 @@
 EStateTreeRunStatus FAppST_Task_AcquireTarget::OnEnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const
 {
 	// @todo STT不适合承接太复杂的业务，距离计算尚可，如果之后存在诸如“根据仇恨值选定目标”等，最好外包出去。
-
-	APP_SCR_ERROR(TEXT("TEST-1"));
-
-
 	AAppAIControllerCommon* AppController = Cast<AAppAIControllerCommon>(InstanceData.AIController);
 	if (!AppController || !InstanceData.Pawn)
 	{

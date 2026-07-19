@@ -1,5 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Prinsi/Entity/Character/Enemy/AppEnemyCharacterBase.h"
+#include "Prinsi/Define/AppDefineDebug.h"
+#include "AIController.h"
 
 
 AAppEnemyCharacterBase::AAppEnemyCharacterBase()
@@ -14,4 +16,12 @@ void AAppEnemyCharacterBase::BeginPlay()
 
 	// @todo 敌人死亡State测试
 	/*AddDeadTag();*/
+}
+
+void AAppEnemyCharacterBase::ArrivedDestination()
+{
+	if (AAIController* AIC = Cast<AAIController>(GetController())) 
+	{
+		AIC->StopMovement();
+	}
 }

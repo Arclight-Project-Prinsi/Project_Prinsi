@@ -91,4 +91,5 @@ public:
 public:
 	UPROPERTY()
 	TObjectPtr<AAppTowerBase>TargetTower = nullptr;		// @note EQS
+
 };

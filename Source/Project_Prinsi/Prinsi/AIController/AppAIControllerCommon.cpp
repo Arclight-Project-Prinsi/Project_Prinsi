@@ -147,3 +147,4 @@ void AAppAIControllerCommon::AbortAssaultMove()
 	bWaitingForAssaultMove = false;
 	MoveStatus = EAppMoveStatus::Idle;		// @note EQS移动处理回到初始状态
 }
+
