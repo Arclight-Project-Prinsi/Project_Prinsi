@@ -1,4 +1,5 @@
 #pragma once
+
 #include "CoreMinimal.h"
 #include "StateTreeTaskBase.h"
 #include "AppST_Task_NonPlayerBase.generated.h"

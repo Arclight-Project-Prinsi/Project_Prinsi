@@ -1,7 +1,8 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
+
 #include "Prinsi/PlayerController/AppArcPlayerController.h"
-#include "Kismet/GameplayStatics.h"								// UE多功能工具包
 #include "Prinsi/Define/AppDefineDebug.h"						// Define_Debug用文件
+#include "Kismet/GameplayStatics.h"								// UE多功能工具包
 #include "EnhancedInputComponent.h"								// Component_输入增强组件
 #include "Prinsi/AppSystem/GirdManager/AppGridTileManager.h"	// Actor_逻辑格子管理器
 #include "Prinsi/AppSystem/GirdManager/AppGridTile.h"			// Actor_逻辑格子
@@ -47,7 +48,6 @@ void AAppArcPlayerController::BeginPlay()
 	FName temp = "gogogo";
 	APP_ERROR(TEXT("临时测试 = %s"), *temp.ToString());
 
-	APP_SCR_ERROR(TEXT("HAO!HAO!HAO!"));
 }
 
 void AAppArcPlayerController::Tick(float DeltaSeconds)

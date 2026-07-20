@@ -1,17 +1,20 @@
 ﻿#pragma once
+
 #include "CoreMinimal.h"
 #include "Prinsi\AIController\StateTree\Task\AppST_Task_NonPlayerBase.h"
-#include "AppST_Task_AcquireTarget.generated.h"
+#include "AppST_Task_MoveToTargetTower.generated.h"
+
+class AAIController;
+class APawn;
 
 
-USTRUCT()
-struct PROJECT_PRINSI_API FAppST_Task_AcquireTarget : public FAppST_Task_NonPlayerBase
+USTRUCT(meta = (DisplayName = "App Task Move To Target Tower"))
+struct PROJECT_PRINSI_API FAppST_Task_MoveToTargetTower : public FAppST_Task_NonPlayerBase
 {
 	GENERATED_BODY()
 
 protected:
-	// 进入State的处理
 	virtual EStateTreeRunStatus OnEnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const override;
-	// 退出State处理
+	virtual EStateTreeRunStatus OnTick(FStateTreeExecutionContext& Context, const float DeltaTime, FInstanceDataType& InstanceData) const override;
 	virtual void OnExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const override;
 };

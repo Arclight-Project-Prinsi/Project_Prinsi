@@ -2,13 +2,6 @@
 
 #include "Prinsi/Define/AppDefineDebug.h"
 
-// @note
 DEFINE_LOG_CATEGORY(LogPrinsi);
 
-AppDefineDebug::AppDefineDebug()
-{
-}
 
-AppDefineDebug::~AppDefineDebug()
-{
-}
