@@ -9,6 +9,7 @@ class UEnvQuery;			// EQS
 class AAppTowerBase;
 class UStateTreeAIComponent;
 class UStateTree;
+class AAppMarchRoute;	// @scaff
 
 // @note enum class?
 // @note 用于表示角色当前的移动状态
@@ -16,7 +17,6 @@ UENUM()
 enum class EAppMoveStatus :uint8
 {
 	Idle,
-	Query,
 	Moving,
 	Succeded,
 	Failed,
@@ -39,15 +39,27 @@ protected:
 	void OnPossess(APawn* InPawn)override;
 
 protected:
-	// @todo 是否需要感知组件?
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
-	//TObjectPtr<UAIPerceptionComponent>PerceptionComp;	// Component_AI感知组件
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	TObjectPtr<UStateTreeAIComponent>StateTreeComp;		// Component_状态树组件
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI|Config")
 	TObjectPtr<UStateTree>StateTree;			// 状态树
+
+	//――――――――――――――――――――
+	// 移动行军（March）关联
+	//――――――――――――――――――――
+protected:
+	int32 CurrentMarchRoutePointIndex = 0;	// 移动行军路径节点
+	bool bWaitingMarchMove = false;			// 移动行军标识
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI|Config|Move")
+	float AcceptanceRadiusMarch = 0.0f;		// 移动行军完成的检测距离
+
+public:
+	// 开始移动行军前进行路径点确认
+	bool RequestMoveAlongMarchRoute();
+	// 开始移动行军向当前目标路径点
+	bool MoveToCurrentMarchRoutePoint();
 
 	//ws1----------------------------------
 
@@ -55,11 +67,12 @@ protected:
 	// EQS关联
 	//――――――――――――――――――――
 public:
-	// EQS调查（Tower目标）
+	// EQS移动前置 & EQS调查（Tower目标）
 	bool RequestMoveToAssaultPointTower();		
 
 protected:
 	// EQS调查完成回调 & 确认是否调用MoveTo位移
+	// @todo 更名为MoveToLocation开始?
 	void OnAssultPointQueryFinished(TSharedPtr<FEnvQueryResult>Result);
 
 protected:
@@ -78,13 +91,14 @@ public:
 	EAppMoveStatus MoveStatus = EAppMoveStatus::Idle;	// 移动状态（STT根据这个变量运行）
 
 protected:
-	bool bWaitingForAssaultMove = false;				// 确保STT专用的MoveStatus不被STT无关的移动所修改
+	bool bWaitingAssaultMove = false;				// 确保STT专用的MoveStatus不被STT无关的移动所修改
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI|Config|Move")
 	float AcceptanceRadius = 80.0f;						// 移动完成的检测距离
 
 	//ws7---------------------------------
 public:
+	// @todo EQS与行军都调用这个，函数名有必要统一。
 	void AbortAssaultMove();
 
 	//ws8---------------------------------
@@ -92,4 +106,17 @@ public:
 	UPROPERTY()
 	TObjectPtr<AAppTowerBase>TargetTower = nullptr;		// @note EQS
 
+	//ws9------------------------------------
+protected:
+	UPROPERTY()
+	TObjectPtr<AAppMarchRoute> MarchRoute = nullptr;	// 移动行军路线（Spline）
+
+
+
+
+	//ws10------------------------------------------
+protected:
+	// @todo 是否需要感知组件?
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	//TObjectPtr<UAIPerceptionComponent>PerceptionComp;	// Component_AI感知组件
 };

@@ -2,6 +2,7 @@
 
 #include "Prinsi/AppSystem/EnemySpawn/AppEnemySpawner.h"
 #include "Prinsi/Define/AppDefineDebug.h"
+#include "Prinsi/Entity/Character/Enemy/AppEnemyCharacterBase.h"
 #include "Components/ArrowComponent.h"
 
 
@@ -49,19 +50,17 @@ AAppEnemyCharacterBase* AAppEnemySpawner::SpawnEnemy()
 		return nullptr;
 	}
 
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	// @note 生成时若发生重叠
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;;
-	// @todo 先在箭头位置生成
+	//----------------------------------------------
 	const FTransform SpawnTransform = ArrowComp->GetComponentTransform();
 
-	// ~~敌人生成
-	AAppEnemyCharacterBase* SpawnedEnemy = World->SpawnActor<AAppEnemyCharacterBase>(
+	// @memo SpawnActorDeferred_延时Spawn
+	// **敌人Sapwn
+	AAppEnemyCharacterBase* SpawnedEnemy = World->SpawnActorDeferred<AAppEnemyCharacterBase>(
 		EnemyClass.Get(),
-		SpawnTransform.GetLocation(),
-		SpawnTransform.Rotator(),
-		SpawnParams
+		SpawnTransform,
+		this,		// @todo 让Spawner作为Enemy的Owner，方便之后的管理操作
+		nullptr,
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
 	);
 
 	if (!SpawnedEnemy)
@@ -69,6 +68,36 @@ AAppEnemyCharacterBase* AAppEnemySpawner::SpawnEnemy()
 		return nullptr;
 	}
 
+	// *设置行军路线
+	SpawnedEnemy->SetMarchRoute(MarchRoute);
+
+	// *Spawn完成
+	// @memo param_决定最终transform
+	SpawnedEnemy->FinishSpawning(SpawnTransform);
+
 	return SpawnedEnemy;
+
+	//----------------------------------------------
+	//FActorSpawnParameters SpawnParams;
+	//SpawnParams.Owner = this;
+	//// @note 生成时若发生重叠
+	//SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	//// @todo 先在箭头位置生成
+	//const FTransform SpawnTransform = ArrowComp->GetComponentTransform();
+
+	//// ~~敌人生成
+	//AAppEnemyCharacterBase* SpawnedEnemy = World->SpawnActor<AAppEnemyCharacterBase>(
+	//	EnemyClass.Get(),
+	//	SpawnTransform.GetLocation(),
+	//	SpawnTransform.Rotator(),
+	//	SpawnParams
+	//);
+
+	//if (!SpawnedEnemy)
+	//{
+	//	return nullptr;
+	//}
+
+	//return SpawnedEnemy;
 }
 

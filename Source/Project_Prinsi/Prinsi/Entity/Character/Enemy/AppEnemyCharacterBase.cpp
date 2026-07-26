@@ -1,6 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Prinsi/Entity/Character/Enemy/AppEnemyCharacterBase.h"
 #include "Prinsi/Define/AppDefineDebug.h"
+#include "Prinsi/AppSystem/GameLoop/AppMarchRoute.h"	// @scaff
 #include "AIController.h"
 
 
@@ -24,4 +25,14 @@ void AAppEnemyCharacterBase::ArrivedDestination()
 	{
 		AIC->StopMovement();
 	}
+}
+
+void AAppEnemyCharacterBase::SetMarchRoute(AAppMarchRoute* InMarchRoute)
+{
+	MarchRoute = InMarchRoute;
+}
+
+AAppMarchRoute* AAppEnemyCharacterBase::GetMarchRoute() const
+{
+	return MarchRoute;
 }

@@ -6,8 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "AppEnemySpawner.generated.h"
 
-class UArrowComponent;
 class AAppEnemyCharacterBase;
+class AAppMarchRoute;
+class UArrowComponent;
 
 
 UCLASS()
@@ -41,5 +42,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnemySpawner|Config")
 	TSubclassOf<AAppEnemyCharacterBase>EnemyClass;
 
-
+	//ws2----------------------------------------------
+protected:
+	// @todo 如果一个Spawner要对应多条行军路线，就需要数组保存
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnemySpawner|Config")
+	TObjectPtr<AAppMarchRoute> MarchRoute;	
 };

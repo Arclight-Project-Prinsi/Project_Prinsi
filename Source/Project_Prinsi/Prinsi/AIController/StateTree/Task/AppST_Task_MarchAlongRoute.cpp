@@ -1,10 +1,10 @@
-﻿#include "Prinsi/AIController/StateTree/Task/AppST_Task_MoveToTargetTower.h"
+﻿#include "Prinsi/AIController/StateTree/Task/AppST_Task_MarchAlongRoute.h"
 #include "Prinsi/Define/AppDefineDebug.h"
 #include "StateTreeExecutionContext.h"		// Need_FStateTreeExecutionContext_STT上下文内容
 #include "Prinsi/AIController/AppAIControllerCommon.h"
 
 
-EStateTreeRunStatus FAppST_Task_MoveToTargetTower::OnEnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const
+EStateTreeRunStatus FAppST_Task_MarchAlongRoute::OnEnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const
 {
 	AAppAIControllerCommon* AppController = Cast<AAppAIControllerCommon>(InstanceData.AIController);
 	if (!AppController)
@@ -12,13 +12,13 @@ EStateTreeRunStatus FAppST_Task_MoveToTargetTower::OnEnterState(FStateTreeExecut
 		return EStateTreeRunStatus::Failed;
 	}
 
-	// 对Tower目标进行EQS调查
-	const bool bRequestSucceeded = AppController->RequestMoveToAssaultPointTower();
+	// 确认行军移动前置处理结果
+	const bool bRequestSucceeded = AppController->RequestMoveAlongMarchRoute();
 	return bRequestSucceeded ?
 		EStateTreeRunStatus::Running : EStateTreeRunStatus::Failed;
 }
 
-EStateTreeRunStatus FAppST_Task_MoveToTargetTower::OnTick(FStateTreeExecutionContext& Context, const float DeltaTime, FInstanceDataType& InstanceData) const
+EStateTreeRunStatus FAppST_Task_MarchAlongRoute::OnTick(FStateTreeExecutionContext& Context, const float DeltaTime, FInstanceDataType& InstanceData) const
 {
 	AAppAIControllerCommon* AppController = Cast<AAppAIControllerCommon>(InstanceData.AIController);
 	if (!AppController)
@@ -26,8 +26,6 @@ EStateTreeRunStatus FAppST_Task_MoveToTargetTower::OnTick(FStateTreeExecutionCon
 		return EStateTreeRunStatus::Failed;
 	}
 
-	// @memo STT最好不要承接太复杂的业务。
-	// @memo MoveTo这个行为实际上由AIController驱动，STT只负责判断结果并驱动状态。
 	switch (AppController->MoveStatus)
 	{
 	case EAppMoveStatus::Succeded:	// Case_移动完成
@@ -49,8 +47,11 @@ EStateTreeRunStatus FAppST_Task_MoveToTargetTower::OnTick(FStateTreeExecutionCon
 	}
 }
 
-void FAppST_Task_MoveToTargetTower::OnExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const
+void FAppST_Task_MarchAlongRoute::OnExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition, FInstanceDataType& InstanceData) const
 {
+	// @scaff
+	APP_ERROR(TEXT("行军移动STT结束!"));
+
 	AAppAIControllerCommon* AppController = Cast<AAppAIControllerCommon>(InstanceData.AIController);
 	if (!AppController)
 	{
