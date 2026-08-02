@@ -27,6 +27,40 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//@scaff 
+	//ws1------------------------------------------
+
+	//--- 格子生成管理相关 ---//
+protected:
+	void ClearAllGrid();		// 清空当前Map中的Grid并销毁对象
+	void GenerateAllGrid();		// 生成初始化Grid并加入Map中
+	void RebuildGridMap();		// 寻找Attach的Grid对象并登录到Map中
+
+	//--- （EUF）格子生成管理相关 ---//
+public:
+	UFUNCTION(CallInEditor, Category = "GridTileManager|EUF")
+	void EUFGenerateGrid();
+
+	UFUNCTION(CallInEditor, Category = "GridTileManager|EUF")
+	void EUFClearGrid();
+
+	//ws2------------------------------------
+public:
+	UFUNCTION(CallInEditor, Category = "GridTileManager|EUF")
+	void EUFToggleAllGridVisible();					//（Debug）
+
+	UFUNCTION(CallInEditor, Category = "GridTileManager|EUF")
+	void EUFRebuildGridMap();
+
+protected:
+	void SetAllGridVisible(bool bVisible);			//（Debug）
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "GridTileManager|Status")
+	bool bGridVisible = true;
+
+	//ws3------------------------------------
+
 	//――――――――――――――――――――
 	// Misc
 	//――――――――――――――――――――
@@ -47,9 +81,6 @@ public:
 	// 起点逻辑坐标_GET_占地实际坐标
 	FVector CalcFootprintCenterWorldLocation(const FIntPoint& OriginCoord, const FIntPoint& FootprintSize)const;
 
-protected:
-	void GenerateGrid();	// 生成所有格子
-	void ClearGrid();		// 清空所有格子
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "GridTileManager|Config")
@@ -67,16 +98,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "GridTileManager|Config", Meta = (ClampMin = "1.0"))
 	float TileSize = 100.0f;				// 格子尺寸
 
-	//――――――――――――――――――――
-	// EUF
-	//――――――――――――――――――――
-	// @memo(MarkPackageDirty) 编辑器改动提示
-public:
-	UFUNCTION(CallInEditor, Category = "GridTileManager|EUF")
-	void EUFGenerateGrid();		// 生成所有格子
 
-	UFUNCTION(CallInEditor, Category = "GridTileManager|EUF")
-	void EUFClearGrid();		// 删除所有格子
 
 	//――――――――――――――――――――
 	// 建造相关（Construction）

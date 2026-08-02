@@ -6,6 +6,7 @@
 #include "AppEnemyCharacterBase.generated.h"
 
 class AAppMarchRoute;
+class AAppTowerBase;
 
 
 UCLASS()
@@ -32,4 +33,16 @@ protected:
 public:
 	void SetMarchRoute(AAppMarchRoute* InMarchRoute);
 	AAppMarchRoute* GetMarchRoute() const;
+
+	// @scaff
+	//ws3------------------------------
+public:
+	bool IsBlocked() const;
+	bool SetBlocker(AAppTowerBase* InBlocker);
+	void ClearBlocker(AAppTowerBase* Blocker = nullptr);
+	AAppTowerBase* GetBlocker() const;
+
+protected:
+	UPROPERTY()
+	TObjectPtr<AAppTowerBase> Blocker = nullptr;
 };

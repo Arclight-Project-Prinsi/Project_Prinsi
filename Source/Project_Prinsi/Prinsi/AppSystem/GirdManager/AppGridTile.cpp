@@ -4,7 +4,8 @@
 #include "Components/BoxComponent.h"
 
 
-AAppGridTile::AAppGridTile() {
+AAppGridTile::AAppGridTile()
+{
 	PrimaryActorTick.bCanEverTick = false;
 
 	//[p]Grid是否真的需要网格模型？（还是仅作为逻辑存在？）
@@ -47,7 +48,19 @@ void AAppGridTile::Tick(float DeltaTime)
 
 }
 
-void AAppGridTile::InitTile(const FIntPoint& InCoord, EGridTileType InTileType) {
+void AAppGridTile::SetGridVisible(bool bVisible)
+{
+#if !UE_BUILD_SHIPPING
+	TileMesh->SetVisibility(bVisible);
+	if (!bVisible)
+	{
+		HighlightMesh->SetVisibility(false);
+	}
+#endif
+}
+
+void AAppGridTile::InitTile(const FIntPoint& InCoord, EGridTileType InTileType)
+{
 	GridCoord = InCoord;
 	TileType = InTileType;
 
@@ -56,12 +69,14 @@ void AAppGridTile::InitTile(const FIntPoint& InCoord, EGridTileType InTileType) 
 	ClearTileOccupied();
 }
 
-void AAppGridTile::SetTileType(EGridTileType InTileType) {
+void AAppGridTile::SetTileType(EGridTileType InTileType)
+{
 	TileType = InTileType;
 	ApplyTileVisual();
 }
 
-bool AAppGridTile::IsBuildable() const {
+bool AAppGridTile::IsBuildable() const
+{
 	// 确认是否已被占领(Occupied)
 	if (bIsOccupied) { return false; }
 
@@ -79,7 +94,8 @@ bool AAppGridTile::IsBuildable() const {
 	}
 }
 
-void AAppGridTile::ApplyTileVisual() {
+void AAppGridTile::ApplyTileVisual()
+{
 	if (!TileMesh) { return; }
 	UMaterialInterface* TargetMat = nullptr;
 
@@ -105,12 +121,14 @@ void AAppGridTile::ApplyTileVisual() {
 		break;
 	}
 
-	if (TargetMat) {
+	if (TargetMat)
+	{
 		TileMesh->SetMaterial(0, TargetMat);
 	}
 }
 
-void AAppGridTile::SetTileHighlight(EGridHighlightType HighlightType) {
+void AAppGridTile::SetTileHighlight(EGridHighlightType HighlightType)
+{
 	if (!HighlightMesh) { return; }
 
 	UMaterialInterface* TargetMat = nullptr;
@@ -139,13 +157,16 @@ void AAppGridTile::SetTileHighlight(EGridHighlightType HighlightType) {
 	HighlightMesh->SetVisibility(true);
 }
 
-void AAppGridTile::ClearTileOccupied() {
+void AAppGridTile::ClearTileOccupied()
+{
 	bIsOccupied = false;
 	OccupiedActor = nullptr;
 }
 
-void AAppGridTile::SetTileOccupied(AActor* InActor) {
-	if (!InActor) {
+void AAppGridTile::SetTileOccupied(AActor* InActor)
+{
+	if (!InActor)
+	{
 		ClearTileOccupied();
 		return;
 	}
@@ -154,8 +175,10 @@ void AAppGridTile::SetTileOccupied(AActor* InActor) {
 	OccupiedActor = InActor;
 }
 
-void AAppGridTile::ClearTileHighlight() {
-	if (HighlightMesh) {
+void AAppGridTile::ClearTileHighlight()
+{
+	if (HighlightMesh)
+	{
 		HighlightMesh->SetVisibility(false);
 	}
 }

@@ -1,12 +1,15 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 #include "CoreMinimal.h"
+// Prinsi
 #include "Prinsi/Component/EntityComponent.h"		// Actor Component_实体组件
+// Misc
 #include "GameFramework/Actor.h"
 #include "AppTowerBase.generated.h"
 
-// ~~前向声明
-class UEntityComponent;		// Component_实体组件
+class UEntityComponent;
+class UBoxComponent;
+class AAppEnemyCharacterBase;	// @scaff
 
 
 UCLASS()
@@ -23,7 +26,7 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|Actor Component")
-	TObjectPtr<UEntityComponent> EntityComp;		// Actor Component_实体组件
+	TObjectPtr<UEntityComponent> EntityComp;			// @scaff Actor Component_实体组件
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|Scene Component")
 	TObjectPtr<UStaticMeshComponent> TowerMeshComp;
@@ -75,4 +78,34 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Status Tower")
 	bool bIsActive = false;		//[p]Active
+
+	//ws4----------------
+	// @scaff 阻挡机制相当于是一种嘲讽
+
+protected:
+	UFUNCTION()
+	void OnBoxBlockEnemyBeginOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComponent,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
+
+public:
+	bool TryBlockEnemy(AAppEnemyCharacterBase* Enemy);
+	void ReleaseEnemy(AAppEnemyCharacterBase* Enemy);
+	bool CanBlockEnemy(const AAppEnemyCharacterBase* Enemy) const;
+	int32 GetCurrentBlockCount() const;
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|Component")
+	TObjectPtr<UBoxComponent> BoxBlockEnemyComp;		// 阻挡检测用
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TowerBlocker|Block")
+	int32 MaxBlockCount = 1;	//最大可阻挡数
+
+	UPROPERTY()
+	TArray<TObjectPtr<AAppEnemyCharacterBase>> BlockedEnemies;	// 当前阻挡敌人
 };

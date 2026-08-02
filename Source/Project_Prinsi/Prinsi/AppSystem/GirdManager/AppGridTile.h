@@ -27,6 +27,11 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
+	// @scaff
+	//ws0------------------------------
+	void SetGridVisible(bool bVisible);		//（Debug）切换TileMesh的可视性
+
 
 
 	//ws----------------------------------------

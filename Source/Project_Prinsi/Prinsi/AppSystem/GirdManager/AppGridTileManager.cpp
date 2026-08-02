@@ -18,7 +18,18 @@ void AAppGridTileManager::BeginPlay()
 	Super::BeginPlay();
 
 	// @todo 先生成所有格子
-	GenerateGrid();
+	//GenerateGrid();
+
+	// @sc
+	// 重构GridMap
+	RebuildGridMap();
+
+	// @sc
+	if (!bGridVisible)
+	{
+		bGridVisible = true;
+		SetAllGridVisible(bGridVisible);
+	}
 }
 
 // Called every frame
@@ -27,6 +38,8 @@ void AAppGridTileManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+
 
 AAppGridTile* AAppGridTileManager::GetTileByCoord(const FIntPoint& Coord) const
 {
@@ -68,9 +81,31 @@ FIntPoint AAppGridTileManager::WorldLocationToGridCoord(const FVector& WorldLoca
 	return FIntPoint(X, Y);
 }
 
-void AAppGridTileManager::GenerateGrid()
+/**
+*	@brief　清空当前Map中的Grid并销毁对象
+*/
+void AAppGridTileManager::ClearAllGrid()
 {
-	ClearGrid();
+	ClearAllHighlights();
+
+	for (auto& Pair : GridMap)
+	{
+		AAppGridTile* Tile = Pair.Value;
+		if (Tile)
+		{
+			Tile->Destroy();
+		}
+	}
+
+	GridMap.Empty();
+}
+
+/**
+*	@brief　生成初始化Grid并加入Map中
+*/
+void AAppGridTileManager::GenerateAllGrid()
+{
+	ClearAllGrid();
 
 	if (!TileClass)
 	{
@@ -101,7 +136,7 @@ void AAppGridTileManager::GenerateGrid()
 			// @todo 暂时全部生成为平地
 			NewTile->InitTile(Coord, EGridTileType::Ground);
 
-#if WITH_EDITOR
+#if !UE_BUILD_SHIPPING
 			// @scaff 为生成的逻辑格子编号方便确认
 			NewTile->SetActorLabel(FString::Printf(TEXT("GridTile_%d_%d"), X, Y));
 #endif
@@ -111,34 +146,90 @@ void AAppGridTileManager::GenerateGrid()
 	}
 }
 
-void AAppGridTileManager::ClearGrid() {
-	ClearAllHighlights();
+/**
+*	@brief　寻找Attach的Grid对象并登录到Map中
+*	@note	BeginPlay调用
+*/
+void AAppGridTileManager::RebuildGridMap()
+{
+	GridMap.Empty();
 
+	// 寻找Attach的GridTile对象并登录到Map
+	TArray<AActor*> AttachedActors;
+	GetAttachedActors(AttachedActors);
+	for (AActor* Actor : AttachedActors)
+	{
+		AAppGridTile* Tile = Cast<AAppGridTile>(Actor);
+		if (!Tile)
+		{
+			continue;
+		}
+
+		// @thumb 
+		const FIntPoint Coord = Tile->GetGridCoord();
+		if (GridMap.Contains(Coord))
+		{
+
+			APP_SCR_ERROR(TEXT("发现重复格子坐标：(%d, %d)"), Coord.X, Coord.Y);
+			continue;
+		}
+
+		GridMap.Add(Tile->GetGridCoord(), Tile);
+	}
+}
+
+/**
+*	@brief　生成初始化Grid并加入Map中
+*	@note	EUF调用
+*/
+void AAppGridTileManager::EUFGenerateGrid()
+{
+#if WITH_EDITOR
+	ClearAllGrid();
+	GenerateAllGrid();
+	// @memo MarkPackageDirty_关卡已发生改变。
+	MarkPackageDirty();
+#endif
+}
+
+/**
+*	@brief　清空当前Map中的Grid并销毁对象
+*	@note	EUF调用
+*/
+void AAppGridTileManager::EUFClearGrid()
+{
+#if WITH_EDITOR
+	ClearAllGrid();
+	MarkPackageDirty();
+#endif
+}
+
+void AAppGridTileManager::EUFToggleAllGridVisible()
+{
+#if WITH_EDITOR
+	bGridVisible = !bGridVisible;
+	SetAllGridVisible(bGridVisible);
+	MarkPackageDirty();
+#endif
+}
+
+void AAppGridTileManager::EUFRebuildGridMap()
+{
+#if WITH_EDITOR
+	RebuildGridMap();
+	MarkPackageDirty();
+#endif
+}
+
+void AAppGridTileManager::SetAllGridVisible(bool bVisible)
+{
 	for (auto& Pair : GridMap)
 	{
-		AAppGridTile* Tile = Pair.Value;
-		if (Tile)
+		if (AAppGridTile* Tile = Pair.Value)
 		{
-			Tile->Destroy();
+			Tile->SetGridVisible(bVisible);
 		}
 	}
-
-	GridMap.Empty();
-}
-
-void AAppGridTileManager::EUFGenerateGrid() {
-#if WITH_EDITOR
-	ClearGrid();
-	GenerateGrid();
-	MarkPackageDirty();
-#endif
-}
-
-void AAppGridTileManager::EUFClearGrid() {
-#if WITH_EDITOR
-	ClearGrid();
-	MarkPackageDirty();
-#endif
 }
 
 TArray<FIntPoint> AAppGridTileManager::GetFootprintCoords(const FIntPoint& OriginCoord, const FIntPoint& FootprintSize) const
@@ -259,7 +350,8 @@ void AAppGridTileManager::ClearAllHighlights()
 	CurrentHighlightedTiles.Empty();
 }
 
-bool AAppGridTileManager::GetTileUnderCursor(APlayerController* PlayerController, AAppGridTile*& OutTile) const {
+bool AAppGridTileManager::GetTileUnderCursor(APlayerController* PlayerController, AAppGridTile*& OutTile) const
+{
 	OutTile = nullptr;
 
 	// 从当前的控制器的鼠标指针处进行射线检测
@@ -318,11 +410,13 @@ FVector AAppGridTileManager::CalcFootprintCenterWorldLocation(const FIntPoint& O
 }
 
 
-void AAppGridTileManager::UpdatePlacementPreview(APlayerController* PlayerController, const FIntPoint& FootprintSize) {
+void AAppGridTileManager::UpdatePlacementPreview(APlayerController* PlayerController, const FIntPoint& FootprintSize)
+{
 	AAppGridTile* CursorTile = nullptr;
 
 	// 找到有效格子
-	if (!GetTileUnderCursor(PlayerController, CursorTile)) {
+	if (!GetTileUnderCursor(PlayerController, CursorTile))
+	{
 		ClearAllHighlights();
 		return;
 	}
