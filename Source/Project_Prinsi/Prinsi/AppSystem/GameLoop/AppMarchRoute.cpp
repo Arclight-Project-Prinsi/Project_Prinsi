@@ -35,6 +35,36 @@ void AAppMarchRoute::Tick(float DeltaTime)
 
 }
 
+/**
+* @brief　	根据Spline节点数组重新配置Spline各个节点
+* @note		EUF函数
+* @note		各节点默认为Linear
+*/
+void AAppMarchRoute::EUF_RebuildRouteSpline()
+{
+	if (!RouteSplineComp)
+	{
+		return;
+	}
+
+	// 清空Spline节点
+	RouteSplineComp->ClearSplinePoints(false);
+
+	// 根据节点数组生成新节点
+	for (int32 i = 0; i < RouteWorldPoints.Num(); ++i)
+	{
+		RouteSplineComp->AddSplinePoint(RouteWorldPoints[i], ESplineCoordinateSpace::World, false
+		);
+
+		// 样式需为Linear
+		RouteSplineComp->SetSplinePointType(i, ESplinePointType::Linear, false);
+	}
+	RouteSplineComp->UpdateSpline();	// @memo Spline修改完成（不要忘了这个）
+
+	// 保存Level资产
+	MarkPackageDirty();
+}
+
 int32 AAppMarchRoute::GetRoutePointCount() const
 {
 	if (!RouteSplineComp)
@@ -62,4 +92,6 @@ FVector AAppMarchRoute::GetRoutePointLocation(int32 PointIndex) const
 
 	return RouteSplineComp->GetLocationAtSplinePoint(PointIndex, ESplineCoordinateSpace::World);
 }
+
+
 

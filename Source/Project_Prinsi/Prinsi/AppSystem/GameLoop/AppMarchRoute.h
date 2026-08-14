@@ -26,6 +26,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//~~ Spline节点生成关联 ~~//
+protected:
+	UFUNCTION(CallInEditor, Category = "MarchRoute|EUF")
+	void EUF_RebuildRouteSpline();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "MarchRoute|Config")
+	TArray<FVector> RouteWorldPoints;		// EUF根据这个生成Spline节点
+
 	//ws-----------------------------
 public:
 	int32 GetRoutePointCount()const;		// 获取行军路线（Spline）上总节点数
@@ -38,4 +47,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "MarchRoute|Scene Component")
 	TObjectPtr<USplineComponent> RouteSplineComp;
+
+	//ws2-----------------
+
 };

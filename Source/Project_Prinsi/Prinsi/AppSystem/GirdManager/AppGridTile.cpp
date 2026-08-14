@@ -48,6 +48,10 @@ void AAppGridTile::Tick(float DeltaTime)
 
 }
 
+/**
+*	@brief　切换TileMesh的可视性
+*	@note	Debug功能
+*/
 void AAppGridTile::SetGridVisible(bool bVisible)
 {
 #if !UE_BUILD_SHIPPING

@@ -33,7 +33,7 @@ void AAppAIControllerCommon::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	// **ST（状态树）启动前所需初始化
-	const AAppEnemyCharacterBase* Enemy =Cast<AAppEnemyCharacterBase>(InPawn);
+	const AAppEnemyCharacterBase* Enemy = Cast<AAppEnemyCharacterBase>(InPawn);
 	if (!Enemy)
 	{
 		return;
@@ -224,25 +224,37 @@ bool AAppAIControllerCommon::RequestMoveToAssaultPointTower()
 		return false;
 	}
 
-	if (!TargetTower)
+	AAppEnemyCharacterBase* EnemyPawn = Cast<AAppEnemyCharacterBase>(GetPawn());
+	if (!EnemyPawn)
 	{
 		MoveStatus = EAppMoveStatus::Failed;
 		return false;
 	}
-
-	APawn* ControlledPawn = GetPawn();
-	if (!ControlledPawn)
+	//@SC
+	AAppTowerBase* Blocker = EnemyPawn->GetBlocker();
+	if (!IsValid(Blocker))
 	{
 		MoveStatus = EAppMoveStatus::Failed;
 		return false;
 	}
+	/*if (!TargetTower)
+	{
+		MoveStatus = EAppMoveStatus::Failed;
+		return false;
+	}*/
+	//APawn* ControlledPawn = GetPawn();
+	//if (!ControlledPawn)
+	//{
+	//	MoveStatus = EAppMoveStatus::Failed;
+	//	return false;
+	//}
 
-	// ~~EQS调查
+	// EQS调查
 	bWaitingAssaultMove = false;
 	// @memo param2_调查主体（即Querier）
-	FEnvQueryRequest QueryRequest(FindAssaultPointQuery, ControlledPawn);
+	FEnvQueryRequest QueryRequest(FindAssaultPointQuery, EnemyPawn);
 
-	// ~~返回调查结果 & 确认是否调用MoveTo位移
+	// 返回调查结果 & 确认是否调用MoveTo位移
 	QueryRequest.Execute(
 		EEnvQueryRunMode::SingleResult,
 		//EEnvQueryRunMode::RandomBest5Pct,			// @memo EQS查询结果可以是随机点位
@@ -250,7 +262,10 @@ bool AAppAIControllerCommon::RequestMoveToAssaultPointTower()
 		&AAppAIControllerCommon::OnAssultPointQueryFinished
 	);
 
-	// ~~调查完成
+	//@sc
+	APP_SCR_ERROR(TEXT("EQS查询成功，向Blocker移动"))
+
+	// 调查完成
 	return true;
 }
 
@@ -258,6 +273,9 @@ void AAppAIControllerCommon::AbortAssaultMove()
 {
 	if (MoveStatus == EAppMoveStatus::Moving)
 	{
+		//@sc
+		APP_SCR_ERROR(TEXT("Blocker移动结束"))
+
 		// @note 快进到OnMoveCompleted?
 		StopMovement();
 	}

@@ -7,9 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "AppGridTile.generated.h"
 
-
-// ~~前向声明
 class UBoxComponent;
+
 
 UCLASS()
 class PROJECT_PRINSI_API AAppGridTile : public AActor
@@ -27,9 +26,9 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
-	// @scaff
-	//ws0------------------------------
+
+	//--- （Debug）格子显示相关 ---
+public:
 	void SetGridVisible(bool bVisible);		//（Debug）切换TileMesh的可视性
 
 

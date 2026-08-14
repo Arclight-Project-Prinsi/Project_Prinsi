@@ -180,7 +180,7 @@ void AAppGridTileManager::RebuildGridMap()
 
 /**
 *	@brief　生成初始化Grid并加入Map中
-*	@note	EUF调用
+*	@note	EUF调用接口
 */
 void AAppGridTileManager::EUFGenerateGrid()
 {
@@ -194,7 +194,7 @@ void AAppGridTileManager::EUFGenerateGrid()
 
 /**
 *	@brief　清空当前Map中的Grid并销毁对象
-*	@note	EUF调用
+*	@note	EUF调用接口
 */
 void AAppGridTileManager::EUFClearGrid()
 {
@@ -204,6 +204,23 @@ void AAppGridTileManager::EUFClearGrid()
 #endif
 }
 
+/**
+*	@brief　寻找Attach的Grid对象并登录到Map中
+*	@note	EUF调用接口
+*/
+void AAppGridTileManager::EUFRebuildGridMap()
+{
+#if WITH_EDITOR
+	RebuildGridMap();
+	MarkPackageDirty();
+#endif
+}
+
+/**
+*	@brief　切换Gird可视性
+*	@note	EUF调用接口
+*	@note	Debug功能
+*/
 void AAppGridTileManager::EUFToggleAllGridVisible()
 {
 #if WITH_EDITOR
@@ -213,14 +230,10 @@ void AAppGridTileManager::EUFToggleAllGridVisible()
 #endif
 }
 
-void AAppGridTileManager::EUFRebuildGridMap()
-{
-#if WITH_EDITOR
-	RebuildGridMap();
-	MarkPackageDirty();
-#endif
-}
-
+/**
+*	@brief　切换Gird可视性
+*	@note	Debug功能
+*/
 void AAppGridTileManager::SetAllGridVisible(bool bVisible)
 {
 	for (auto& Pair : GridMap)

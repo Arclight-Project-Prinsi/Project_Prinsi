@@ -7,7 +7,8 @@
 #include "Prinsi/Define/AppDefineDebug.h"
 
 
-AAppTowerBase::AAppTowerBase() {
+AAppTowerBase::AAppTowerBase()
+{
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -27,7 +28,8 @@ AAppTowerBase::AAppTowerBase() {
 	}
 }
 
-void AAppTowerBase::BeginPlay() {
+void AAppTowerBase::BeginPlay()
+{
 	Super::BeginPlay();
 
 	//[p]
@@ -42,7 +44,8 @@ void AAppTowerBase::BeginPlay() {
 	BoxBlockEnemyComp->OnComponentBeginOverlap.AddUniqueDynamic(this, &AAppTowerBase::OnBoxBlockEnemyBeginOverlap);
 }
 
-bool AAppTowerBase::InitFromConfig(FName Id) {
+bool AAppTowerBase::InitFromConfig(FName Id)
+{
 	// ~~读取主表(Main)
 	if (!EntityBaseTable)
 	{
@@ -71,7 +74,8 @@ bool AAppTowerBase::InitFromConfig(FName Id) {
 
 
 	// ~~读取Tower扩展表(Extra)
-	if (!TowerExtraTable) {
+	if (!TowerExtraTable)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("TowerExtraTable为空_TowerBase.cpp")); return false;
 	}
 
@@ -91,7 +95,8 @@ bool AAppTowerBase::InitFromConfig(FName Id) {
 	return true;
 }
 
-bool AAppTowerBase::InitTowerFromConfig(const FEntityTowerExtraConfig* TowerConfig) {
+bool AAppTowerBase::InitTowerFromConfig(const FEntityTowerExtraConfig* TowerConfig)
+{
 	if (!TowerConfig) { return false; }
 
 	Damage = TowerConfig->Damage;				// 伤害
@@ -101,7 +106,8 @@ bool AAppTowerBase::InitTowerFromConfig(const FEntityTowerExtraConfig* TowerConf
 	return true;
 }
 
-bool AAppTowerBase::InitialTower() {
+bool AAppTowerBase::InitialTower()
+{
 	if (bIsActive) { return false; }
 	if (!EntityComp) { return false; }
 
@@ -116,7 +122,13 @@ void AAppTowerBase::OnBoxBlockEnemyBeginOverlap(UPrimitiveComponent* OverlappedC
 	{
 		return;
 	}
-	TryBlockEnemy(Enemy);
+
+	{
+		//@sc
+		APP_SCR_ERROR(TEXT("碰撞检测成功!"));
+
+		TryBlockEnemy(Enemy);
+	}
 }
 
 bool AAppTowerBase::TryBlockEnemy(AAppEnemyCharacterBase* Enemy)

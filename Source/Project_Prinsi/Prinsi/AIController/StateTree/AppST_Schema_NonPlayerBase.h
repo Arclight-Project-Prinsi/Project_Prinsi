@@ -14,9 +14,9 @@ class PROJECT_PRINSI_API UAppST_Schema_NonPlayerBase : public UStateTreeAICompon
 	GENERATED_BODY()
 	
 public:
-	// @note 决定该Schema允许的构造体
+	// 放行struct设定
 	virtual bool IsStructAllowed(const UScriptStruct* InScriptStruct)const override;
 
-	// @note 决定该Schema允许的Class
+	// 放行class设定
 	virtual bool IsClassAllowed(const UClass* InClass)const override;
 };

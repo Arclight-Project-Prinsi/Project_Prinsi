@@ -27,39 +27,34 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	//@scaff 
-	//ws1------------------------------------------
-
-	//--- 格子生成管理相关 ---//
+	//――――――――――――――――――――
+	// 格子管理相关
+	//――――――――――――――――――――
 protected:
-	void ClearAllGrid();		// 清空当前Map中的Grid并销毁对象
-	void GenerateAllGrid();		// 生成初始化Grid并加入Map中
-	void RebuildGridMap();		// 寻找Attach的Grid对象并登录到Map中
+	void ClearAllGrid();					// 清空当前Map中的Grid并销毁对象
+	void GenerateAllGrid();					// 生成初始化Grid并加入Map中
+	void RebuildGridMap();					// 寻找Attach的Grid对象并登录到Map中
 
-	//--- （EUF）格子生成管理相关 ---//
+	void SetAllGridVisible(bool bVisible);	//（Debug）切换Gird可视性 
+	
+	//--- EUF调用接口 ---
 public:
 	UFUNCTION(CallInEditor, Category = "GridTileManager|EUF")
 	void EUFGenerateGrid();
-
 	UFUNCTION(CallInEditor, Category = "GridTileManager|EUF")
 	void EUFClearGrid();
-
-	//ws2------------------------------------
-public:
-	UFUNCTION(CallInEditor, Category = "GridTileManager|EUF")
-	void EUFToggleAllGridVisible();					//（Debug）
-
 	UFUNCTION(CallInEditor, Category = "GridTileManager|EUF")
 	void EUFRebuildGridMap();
 
-protected:
-	void SetAllGridVisible(bool bVisible);			//（Debug）
+	UFUNCTION(CallInEditor, Category = "GridTileManager|EUF")
+	void EUFToggleAllGridVisible();			//（Debug）切换Gird可视性
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "GridTileManager|Status")
-	bool bGridVisible = true;
+	bool bGridVisible = true;				//（Debug）（标识）Gird可视性
 
-	//ws3------------------------------------
+
+	//ws1------------------------------------
 
 	//――――――――――――――――――――
 	// Misc
