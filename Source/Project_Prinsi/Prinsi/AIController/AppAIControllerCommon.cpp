@@ -230,6 +230,7 @@ bool AAppAIControllerCommon::RequestMoveToAssaultPointTower()
 		MoveStatus = EAppMoveStatus::Failed;
 		return false;
 	}
+
 	//@SC
 	AAppTowerBase* Blocker = EnemyPawn->GetBlocker();
 	if (!IsValid(Blocker))
@@ -237,17 +238,6 @@ bool AAppAIControllerCommon::RequestMoveToAssaultPointTower()
 		MoveStatus = EAppMoveStatus::Failed;
 		return false;
 	}
-	/*if (!TargetTower)
-	{
-		MoveStatus = EAppMoveStatus::Failed;
-		return false;
-	}*/
-	//APawn* ControlledPawn = GetPawn();
-	//if (!ControlledPawn)
-	//{
-	//	MoveStatus = EAppMoveStatus::Failed;
-	//	return false;
-	//}
 
 	// EQS调查
 	bWaitingAssaultMove = false;
@@ -273,10 +263,6 @@ void AAppAIControllerCommon::AbortAssaultMove()
 {
 	if (MoveStatus == EAppMoveStatus::Moving)
 	{
-		//@sc
-		APP_SCR_ERROR(TEXT("Blocker移动结束"))
-
-		// @note 快进到OnMoveCompleted?
 		StopMovement();
 	}
 

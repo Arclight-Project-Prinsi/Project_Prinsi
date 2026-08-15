@@ -5,26 +5,21 @@
 #include "AppST_Evaluator_EnemyStatusBase.generated.h"
 
 
-//@sc Evaluator可理解为ST运行时的一个动态黑板
-
 /**
- *
+ *	@note Evaluator可理解为ST运行时的一个动态黑板	
  */
 USTRUCT()
 struct FAppST_Evaluator_EnemyStatusInstanceData
 {
 	GENERATED_BODY()
 
-	//@sc 声明为input以便在资产中进行上下文绑定		
+	// @memo meta = (Input)允许在资产中进行上下文绑定		
 	UPROPERTY(EditAnywhere, Category = "STEnemy|Status", meta = (Input))
 	TObjectPtr<APawn> Pawn = nullptr;
 
-	//@sc meta = (Output)允许其他节点（STT?）绑定读取
+	// @memo meta = (Output)允许其他节点（STT）绑定读取
 	UPROPERTY(VisibleAnywhere, Category = "STEnemy|Status", meta = (Output))
-	TObjectPtr<AAppTowerBase> Blocker = nullptr;
-
-	UPROPERTY(VisibleAnywhere, Category = "STEnemy|Status", meta = (Output))
-	bool bIsBlocked = false;		//@sc 因为是用于ST的标识，直接在Evaluator中更新即可？
+	TObjectPtr<AAppTowerBase> Blocker = nullptr;	
 };
 
 USTRUCT(meta = (DisplayName = "AppST Enemy State Base"))
@@ -43,5 +38,5 @@ struct PROJECT_PRINSI_API FAppST_Evaluator_EnemyStatusBase : public FStateTreeEv
 	virtual void Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const override;
 
 protected:
-	void UpdateEnemyStatus(FStateTreeExecutionContext& Context) const;		//@sc 更新用
+	void UpdateEnemyStatus(FStateTreeExecutionContext& Context) const;		
 };

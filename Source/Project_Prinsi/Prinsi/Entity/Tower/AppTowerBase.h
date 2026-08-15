@@ -13,7 +13,8 @@ class AAppEnemyCharacterBase;	// @scaff
 
 
 UCLASS()
-class PROJECT_PRINSI_API AAppTowerBase : public AActor {
+class PROJECT_PRINSI_API AAppTowerBase : public AActor
+{
 	GENERATED_BODY()
 
 public:
@@ -26,11 +27,23 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|Actor Component")
-	TObjectPtr<UEntityComponent> EntityComp;			// @scaff Actor Component_实体组件
+	TObjectPtr<UEntityComponent> EntityComp;					// @sc Actor Component_实体组件
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|Scene Component")
 	TObjectPtr<UStaticMeshComponent> TowerMeshComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|Component")
+	TObjectPtr<UBoxComponent> BoxBlockEnemyComp;				// 阻挡检测用
+
+	//~~ 阻挡关联（Block） ~~//
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TowerBase|Config|Block")
+	int32 MaxBlockCount = 1;		//最大可阻挡数
+
+	UPROPERTY()
+	TArray<TObjectPtr<AAppEnemyCharacterBase>> BlockedEnemies;	// 当前阻挡敌人
+
+	//ws-------------------------------------------------
 
 	//――――――――――――――――――――
 	// Entity初期配置
@@ -98,14 +111,4 @@ public:
 	bool CanBlockEnemy(const AAppEnemyCharacterBase* Enemy) const;
 	int32 GetCurrentBlockCount() const;
 
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|Component")
-	TObjectPtr<UBoxComponent> BoxBlockEnemyComp;		// 阻挡检测用
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TowerBlocker|Block")
-	int32 MaxBlockCount = 1;	//最大可阻挡数
-
-	UPROPERTY()
-	TArray<TObjectPtr<AAppEnemyCharacterBase>> BlockedEnemies;	// 当前阻挡敌人
 };

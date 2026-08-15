@@ -123,12 +123,7 @@ void AAppTowerBase::OnBoxBlockEnemyBeginOverlap(UPrimitiveComponent* OverlappedC
 		return;
 	}
 
-	{
-		//@sc
-		APP_SCR_ERROR(TEXT("碰撞检测成功!"));
-
-		TryBlockEnemy(Enemy);
-	}
+	TryBlockEnemy(Enemy);
 }
 
 bool AAppTowerBase::TryBlockEnemy(AAppEnemyCharacterBase* Enemy)
@@ -151,6 +146,9 @@ bool AAppTowerBase::TryBlockEnemy(AAppEnemyCharacterBase* Enemy)
 		BlockedEnemies.Remove(Enemy);
 		return false;
 	}
+
+	//@sc
+	APP_SCR_ERROR(TEXT("阻挡成功!"));
 
 	return true;
 }
