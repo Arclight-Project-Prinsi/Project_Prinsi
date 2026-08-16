@@ -1,12 +1,16 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Prinsi/PlayerController/AppArcPlayerController.h"
-#include "Prinsi/Define/AppDefineDebug.h"						// Define_Debug用文件
+// Prinsi Entity
+#include "Prinsi/Entity/Tower/AppTowerBase.h"					// 塔基类
+// Component
+#include "Components/SkeletalMeshComponent.h"					
+// Misc
+#include "Prinsi/Define/AppDefineDebug.h"						// Debug用文件
 #include "Kismet/GameplayStatics.h"								// UE多功能工具包
-#include "EnhancedInputComponent.h"								// Component_输入增强组件
-#include "Prinsi/AppSystem/GirdManager/AppGridTileManager.h"	// Actor_逻辑格子管理器
-#include "Prinsi/AppSystem/GirdManager/AppGridTile.h"			// Actor_逻辑格子
-#include "Prinsi/Entity/Tower/AppTowerBase.h"					// Acotr_塔基类
+#include "EnhancedInputComponent.h"								// 输入增强组件
+#include "Prinsi/AppSystem/GirdManager/AppGridTileManager.h"	// 逻辑格子管理器
+#include "Prinsi/AppSystem/GirdManager/AppGridTile.h"			// 逻辑格子
 
 
 void AAppArcPlayerController::BeginPlay()
@@ -35,19 +39,8 @@ void AAppArcPlayerController::BeginPlay()
 	// 找到逻辑格子管理器指针(GridManager)
 	if (!GridManager)
 	{
-		GridManager = Cast<AAppGridTileManager>(
-			UGameplayStatics::GetActorOfClass(GetWorld(), AAppGridTileManager::StaticClass())
-		);
+		GridManager = Cast<AAppGridTileManager>(UGameplayStatics::GetActorOfClass(GetWorld(), AAppGridTileManager::StaticClass()));
 	}
-
-	// @todo debug工具测试
-	APP_LOG(TEXT("123"));
-	APP_WARNING(TEXT("456"));
-	APP_ERROR(TEXT("789"), 10.0f, 42.0f);
-
-	FName temp = "gogogo";
-	APP_ERROR(TEXT("临时测试 = %s"), *temp.ToString());
-
 }
 
 void AAppArcPlayerController::Tick(float DeltaSeconds)
@@ -61,7 +54,7 @@ void AAppArcPlayerController::Tick(float DeltaSeconds)
 		break;
 	}
 
-	case EOperationMode::Placement:		// Case_预览体位置更新 & 格子的部署合法性检查
+	case EOperationMode::Placement:		// 【Case】预览体位置更新 & 格子的部署合法性检查
 	{
 		if (GridManager)
 		{
@@ -76,11 +69,13 @@ void AAppArcPlayerController::Tick(float DeltaSeconds)
 	}
 }
 
-void AAppArcPlayerController::SetupInputComponent() {
+void AAppArcPlayerController::SetupInputComponent()
+{
 	Super::SetupInputComponent();
 
 	// IA响应绑定
-	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent)) {
+	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent))
+	{
 		// 移动玩家角色
 		if (IA_MovePlayer)
 		{
@@ -102,7 +97,8 @@ void AAppArcPlayerController::SetupInputComponent() {
 	}
 }
 
-void AAppArcPlayerController::OnEnterPlacementMode() {
+void AAppArcPlayerController::OnEnterPlacementMode()
+{
 	switch (OperationMode)
 	{
 	case EOperationMode::Normal:		// Case_进入建造模式
@@ -156,9 +152,12 @@ void AAppArcPlayerController::OnConfirmPlacement()
 	TryPlaceCurrentPreview();
 }
 
+/**
+* @brief	创建预览体 & 设置占地尺寸（Footprint）
+*/
 void AAppArcPlayerController::CreatePlacementPreviewActor()
 {
-	if (CurrentPreviewTower)
+	if (IsValid(CurrentPreviewTower))
 	{
 		return;
 	}
@@ -169,6 +168,7 @@ void AAppArcPlayerController::CreatePlacementPreviewActor()
 	}
 
 	// 生成预览体 & 获取占地数据
+	// @todo 预览体使用默认旋转?
 	UWorld* World = GetWorld();
 	if (!World)
 	{
@@ -180,26 +180,31 @@ void AAppArcPlayerController::CreatePlacementPreviewActor()
 	{
 		return;
 	}
-
-	CurrentPreviewTower->InitialTower();		// @note 初始化
+	CurrentPreviewTower->InitialTower();	// Entity初始化（占地尺寸等）
 	CurrentPreviewTower->SetActorEnableCollision(false);
 	SetPreviewTowerVisible(false);
 
-	CurrentPlacementFootprint = CurrentPreviewTower->GetFootprintSize();	// 占地
+	CurrentPlacementFootprint = CurrentPreviewTower->GetFootprintSize();	// 占地尺寸
 }
 
+/**
+* @brief	销毁预览体
+*/
 void AAppArcPlayerController::DestroyPlacementPreviewActor()
 {
-	if (CurrentPreviewTower)
+	if (IsValid(CurrentPreviewTower))
 	{
 		CurrentPreviewTower->Destroy();
 		CurrentPreviewTower = nullptr;
 	}
 }
 
+/**
+* @brief	更新预览体状态与方位
+*/
 void AAppArcPlayerController::UpdatePlacementPreviewActor()
 {
-	if (!CurrentPreviewTower)
+	if (!IsValid(CurrentPreviewTower))
 	{
 		return;
 	}
@@ -211,19 +216,23 @@ void AAppArcPlayerController::UpdatePlacementPreviewActor()
 	bool bCanPlace = false;
 	if (!GetCurrentPlacementData(OriginCoord, Coords, PlacementLocation, bCanPlace))
 	{
-		SetPreviewTowerVisible(false);
+		SetPreviewTowerVisible(false);		// 设置预览体可视性（不可视）
 		return;
 	}
 
-	// 占地实际坐标
+	// @todo 有没有更平滑的预览体移动方式?
+	// 设置预览体位置（占地实际坐标）
 	CurrentPreviewTower->SetActorLocation(PlacementLocation);
 
-	// (根据可部署情况)设置预览体材质
-	SetPreviewTowerVisible(true);
+	SetPreviewTowerVisible(true);			// 设置预览体可视性（可视）
 	SetPreviewTowerMaterial(bCanPlace ? BuildablePreviewMaterial : UnbuildablePreviewMaterial);
 }
 
-void AAppArcPlayerController::SetPreviewTowerVisible(bool bVisible) {
+/**
+* @brief	设置预览体可视性
+*/
+void AAppArcPlayerController::SetPreviewTowerVisible(bool bVisible)
+{
 	if (!CurrentPreviewTower)
 	{
 		return;
@@ -232,23 +241,28 @@ void AAppArcPlayerController::SetPreviewTowerVisible(bool bVisible) {
 	CurrentPreviewTower->SetActorHiddenInGame(!bVisible);
 }
 
-void AAppArcPlayerController::SetPreviewTowerMaterial(UMaterialInterface* Material) {
+/**
+* @brief	设置预览体材质
+*/
+void AAppArcPlayerController::SetPreviewTowerMaterial(UMaterialInterface* Material)
+{
 	if (!CurrentPreviewTower || !Material)
 	{
 		return;
 	}
 
-	// @memo GetNumMaterials 保证可以覆盖到所有的材质
-	TArray<UStaticMeshComponent*> MeshComponents;
-	CurrentPreviewTower->GetComponents<UStaticMeshComponent>(MeshComponents);
-
-	for (UStaticMeshComponent* MeshComp : MeshComponents)
+	//@todo Tower是否统一为为骨骼模型?
+	//TArray<UStaticMeshComponent*> MeshComponents;
+	TArray<USkeletalMeshComponent*> SkeletonComps;
+	CurrentPreviewTower->GetComponents<USkeletalMeshComponent>(SkeletonComps);
+	for (USkeletalMeshComponent* MeshComp : SkeletonComps)
 	{
 		if (!MeshComp)
 		{
 			continue;
 		}
 
+		// @memo GetNumMaterials 保证可以覆盖到所有的材质
 		const int32 MaterialNum = MeshComp->GetNumMaterials();
 		for (int32 i = 0; i < MaterialNum; ++i)
 		{
@@ -257,6 +271,9 @@ void AAppArcPlayerController::SetPreviewTowerMaterial(UMaterialInterface* Materi
 	}
 }
 
+/**
+* @brief	正式部署Tower
+*/
 bool AAppArcPlayerController::TryPlaceCurrentPreview()
 {
 	if (OperationMode != EOperationMode::Placement)
@@ -264,12 +281,12 @@ bool AAppArcPlayerController::TryPlaceCurrentPreview()
 		return false;
 	}
 
-	if (!GridManager || !CurrentPlacementTowerClass)
+	if (!IsValid(GridManager) || !CurrentPlacementTowerClass)
 	{
 		return false;
 	}
 
-	// ~获取Placement数据
+	// 获取Placement数据
 	FIntPoint OriginCoord;
 	TArray<FIntPoint> Coords;
 	FVector PlacementLocation;
@@ -278,54 +295,57 @@ bool AAppArcPlayerController::TryPlaceCurrentPreview()
 	{
 		return false;
 	}
-
 	if (!bCanPlace)
 	{
 		return false;
 	}
 
-	// @todo 目前只能部署Tower
-	// ~生成Tower对象
+	// 生成Tower对象
 	UWorld* World = GetWorld();
 	if (!World)
 	{
 		return false;
 	}
-
 	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;		// @note 这里用this?
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;	// @note 这个设定?
-
-	AAppTowerBase* NewTower = World->SpawnActor<AAppTowerBase>(CurrentPlacementTowerClass, PlacementLocation, FRotator::ZeroRotator, SpawnParams);
+	SpawnParams.Owner = this;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	//@todo Tower的Owner应该为AC吗?
+	AAppTowerBase* NewTower = World->SpawnActor<AAppTowerBase>
+		(CurrentPlacementTowerClass, PlacementLocation, FRotator::ZeroRotator, SpawnParams);
 	if (!NewTower)
 	{
-		APP_ERROR(TEXT("Tower对象Actor生成失败。")); return false;
+		return false;
 	}
 
 	if (!NewTower->InitialTower())
 	{
-		APP_ERROR(TEXT("Tower对象Actor初始化失败。")); return false;
+		return false;
 	}
 
 	// 逻辑坐标绑定
 	if (!GridManager->OccupyCoords(Coords, NewTower))
 	{
 		NewTower->Destroy();
-		APP_ERROR(TEXT("Tower对象Actor逻辑坐标绑定失败。")); return false;
+		// @thumb
+		APP_SCR_ERROR(TEXT("【Error】预览体逻辑坐标绑定失败!"));
+		return false;
 	}
 
 	return true;
 }
 
+/**
+* @brief	获取当前部署情况数据（参考当前的Footprint）
+*/
 bool AAppArcPlayerController::GetCurrentPlacementData(FIntPoint& OutOriginCoord, TArray<FIntPoint>& OutCoords, FVector& OutPlacementLocation, bool& bOutCanPlace)
 {
-	// ~~要输出的数据结构
+	// 初始化要输出的数据结构
 	OutOriginCoord = FIntPoint::ZeroValue;
 	OutCoords.Empty();
 	OutPlacementLocation = FVector::ZeroVector;
 	bOutCanPlace = false;
 
-	if (!GridManager)
+	if (!IsValid(GridManager))
 	{
 		return false;
 	}
@@ -335,7 +355,7 @@ bool AAppArcPlayerController::GetCurrentPlacementData(FIntPoint& OutOriginCoord,
 		return false;
 	}
 
-	// ~~进行可部署检测(独立于预览体更新)
+	// 进行可部署检测(独立于预览体更新)
 	AAppGridTile* CursorTile = nullptr;
 	if (!GridManager->GetTileUnderCursor(this, CursorTile))
 	{
@@ -350,6 +370,7 @@ bool AAppArcPlayerController::GetCurrentPlacementData(FIntPoint& OutOriginCoord,
 	// Out_所有占地逻辑格子
 	OutCoords = GridManager->GetFootprintCoords(OutOriginCoord, CurrentPlacementFootprint);
 	// Out_检测占地逻辑格子是否合法
+	// @memo 预览体当然存在“可视但不可部署”的情况。
 	bOutCanPlace = GridManager->CanPlaceAtCoords(OutCoords);
 	// Out_占地实际坐标
 	OutPlacementLocation = GridManager->CalcFootprintCenterWorldLocation(OutOriginCoord, CurrentPlacementFootprint);

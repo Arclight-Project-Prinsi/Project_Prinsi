@@ -1,8 +1,8 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 #include "CoreMinimal.h"
-// Prinsi
-#include "Prinsi/Component/EntityComponent.h"		// Actor Component_实体组件
+// Prinsi Component
+#include "Prinsi/Component/EntityComponent.h"		// 实体组件
 // Misc
 #include "GameFramework/Actor.h"
 #include "AppTowerBase.generated.h"
@@ -10,7 +10,7 @@
 class UEntityComponent;
 class UBoxComponent;
 class AAppEnemyCharacterBase;	// @scaff
-
+class USkeletalMeshComponent;	// @SC
 
 UCLASS()
 class PROJECT_PRINSI_API AAppTowerBase : public AActor
@@ -26,14 +26,12 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|Actor Component")
-	TObjectPtr<UEntityComponent> EntityComp;					// @sc Actor Component_实体组件
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|Scene Component")
-	TObjectPtr<UStaticMeshComponent> TowerMeshComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|ActorComponent")
+	TObjectPtr<UEntityComponent> EntityComp;					// @sc Actor Component_实体组件(只用于初始化?)
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|Component")
-	TObjectPtr<UBoxComponent> BoxBlockEnemyComp;				// 阻挡检测用
+	TObjectPtr<UBoxComponent> BoxBlockEnemyComp;				// 阻挡检测用Box
+
 
 	//~~ 阻挡关联（Block） ~~//
 protected:
@@ -44,7 +42,16 @@ protected:
 	TArray<TObjectPtr<AAppEnemyCharacterBase>> BlockedEnemies;	// 当前阻挡敌人
 
 	//ws-------------------------------------------------
+protected:
+	//@sc
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|Scene Component")
+	TObjectPtr<UStaticMeshComponent> TowerMeshComp;*/
 
+	//@sc
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerBase|SceneComponent")
+	TObjectPtr<USkeletalMeshComponent> MeshComp;
+
+	//ws2-------------------------------------------------
 	//――――――――――――――――――――
 	// Entity初期配置
 	//――――――――――――――――――――

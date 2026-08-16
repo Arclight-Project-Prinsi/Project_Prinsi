@@ -1,9 +1,11 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "Prinsi/Entity/Tower/AppTowerBase.h"
-// Prinsi
+// Component
+#include "Components/SkeletalMeshComponent.h"	//@sc
+#include "Components/BoxComponent.h"
+// Prinsi Entity
 #include "Prinsi/Entity/Character/Enemy/AppEnemyCharacterBase.h"
 // Misc
-#include "Components/BoxComponent.h"
 #include "Prinsi/Define/AppDefineDebug.h"
 
 
@@ -14,11 +16,17 @@ AAppTowerBase::AAppTowerBase()
 
 	// ~~初始化组件
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	TowerMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TowerMesh"));
+	//@sc
+	MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TowerMeshComp"));
+	/*TowerMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TowerMesh"));*/
+
 	EntityComp = CreateDefaultSubobject<UEntityComponent>(TEXT("Entity"));
 	BoxBlockEnemyComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxBlockEnemy"));
 
-	TowerMeshComp->SetupAttachment(RootComponent);
+	//@sc
+	/*TowerMeshComp->SetupAttachment(RootComponent);*/
+	MeshComp->SetupAttachment(RootComponent);
+
 	BoxBlockEnemyComp->SetupAttachment(RootComponent);
 
 	// ~初始化组件_BoxBlockEnemyComp
@@ -108,8 +116,15 @@ bool AAppTowerBase::InitTowerFromConfig(const FEntityTowerExtraConfig* TowerConf
 
 bool AAppTowerBase::InitialTower()
 {
-	if (bIsActive) { return false; }
-	if (!EntityComp) { return false; }
+	if (bIsActive)
+	{
+		return false;
+	}
+
+	if (!EntityComp)
+	{
+		return false;
+	}
 
 	bIsActive = InitFromConfig(EntityComp->GetEntityId());
 	return bIsActive;
