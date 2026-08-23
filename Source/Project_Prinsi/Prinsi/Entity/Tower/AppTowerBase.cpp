@@ -208,3 +208,15 @@ int32 AAppTowerBase::GetCurrentBlockCount() const
 	return int32();
 }
 
+//@ch
+AAppEnemyCharacterBase* AAppTowerBase::GetBlockedEnemy()
+{
+	//@todo 暂时以第一个要素为目标
+	if (BlockedEnemies.IsValidIndex(0) && IsValid(BlockedEnemies[0]))
+	{
+		return BlockedEnemies[0];
+	}
+
+	return nullptr;
+}
+

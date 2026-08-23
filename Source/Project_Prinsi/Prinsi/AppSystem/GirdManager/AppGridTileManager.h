@@ -90,11 +90,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "GridTileManager|Config", Meta = (ClampMin = "1.0"))
 	float TileSize = 100.0f;						// 格子尺寸
-protected:
 
+protected:
 	UPROPERTY()
 	TArray<AAppGridTile*> CurrentHighlightedTiles;	// 当前激活状态高光显示的格子
-
 
 	//~~ 建造相关（Construction） ~~//
 public:

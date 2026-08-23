@@ -118,4 +118,7 @@ public:
 	bool CanBlockEnemy(const AAppEnemyCharacterBase* Enemy) const;
 	int32 GetCurrentBlockCount() const;
 
+
+	//ws5---------------------
+	AAppEnemyCharacterBase* GetBlockedEnemy();
 };
